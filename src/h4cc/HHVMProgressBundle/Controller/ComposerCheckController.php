@@ -21,6 +21,10 @@ class ComposerCheckController extends Controller
      */
     public function checkAction(Request $request)
     {
+        if(!$request->files->has('composer_lock')) {
+            return $this->formAction();
+        }
+
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $composerLock */
         $composerLock = $request->files->get('composer_lock');
         $composerLockContent = file_get_contents($composerLock->getPathname());

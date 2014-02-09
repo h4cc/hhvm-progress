@@ -8,9 +8,6 @@
     <p class="lead">
         Number of Composer Packages that are hosted on Github and tested via Travis-CI with HHVM.
     </p>
-    <p class="lead">
-        Green is supporting HHVM, orange is working towards HHVM and red is not using HHVM to run their tests.
-    </p>
 
     <div class="progress">
         <div class="progress-bar progress-bar-success" style="width: {{ stats.supported_percent }}%;">
@@ -33,6 +30,10 @@
             <span>{{ stats.not_supported }}</span>
         </div>
     </div>
+
+    <p class="lead">
+        Green is supporting HHVM, orange is working towards HHVM and red is not using HHVM to run their tests.
+    </p>
 </div>
 
     {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
