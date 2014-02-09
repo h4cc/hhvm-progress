@@ -1,0 +1,40 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+<div class="jumbotron">
+    <h1>Current HHVM Support</h1>
+
+    <p class="lead">
+        Number of Composer Packages that are hosted on Github and tested via Travis-CI with HHVM.
+    </p>
+    <p class="lead">
+        Green is supporting HHVM, orange is working towards HHVM and red is not using HHVM to run their tests.
+    </p>
+
+    <div class="progress">
+        <div class="progress-bar progress-bar-success" style="width: {{ stats.supported_percent }}%;">
+            <span>
+                <a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
+                    {{ stats.supported }}
+                </a>
+            </span>
+        </div>
+        <div class="progress-bar progress-bar-warning"
+             style="width: {{ stats.allowed_failure_percent }}%;">
+            <span>
+                <a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
+                    {{ stats.allowed_failure }}
+                </a>
+            </span>
+        </div>
+        <div class="progress-bar progress-bar-danger"
+             style="width: {{ stats.not_supported_percent }}%;">
+            <span>{{ stats.not_supported }}</span>
+        </div>
+    </div>
+</div>
+
+    {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
+
+{% endblock %}

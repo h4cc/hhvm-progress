@@ -1,0 +1,4 @@
+h4cc_hhvm_progress:
+    resource: "@h4ccHHVMProgressBundle/Resources/config/routing.yml"
+    prefix:   /
+

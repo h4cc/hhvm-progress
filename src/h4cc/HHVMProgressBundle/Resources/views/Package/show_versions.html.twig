@@ -1,0 +1,39 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
+
+    <h1>Package {{ name }}</h1>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>Version</th>
+            <th>HHVM Support</th>
+        </tr>
+    {% for version in versions %}
+        <tr class="
+        {% if version.hhvmStatus == 1 %}danger{% endif %}
+        {% if version.hhvmStatus == 2 %}warning{% endif %}
+        {% if version.hhvmStatus == 3 %}success{% endif %}
+        ">
+            <td>{{ version.name }}</td>
+            <td>{{ version.version }}</td>
+            <td>
+                {% if version.hhvmStatus == 1 %}Not supported{% endif %}
+                {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
+                        Tested as allowed failure
+                    </a>
+                {% endif %}
+                {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
+                        Supported
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </table>
+
+{% endblock %}

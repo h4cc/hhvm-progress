@@ -1,0 +1,44 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>About this page</h1>
+
+    <p>
+        This website tries to visualize the current state of the HHVM support in PHP libraries and frameworks.
+        <br/>
+        Aim is to provide a resource to check, if the used libraries support HHVM.
+    </p>
+
+    <p>
+        To provide this information, we list all available packages from packagist.org and try to fetch the .travis.yml file from github.
+        The result of this can be as followed:
+        <ul>
+            <li><b>Not Supported</b>: The package is a "language: php" travis build, but does not build against HHVM at all.</li>
+            <li><b>Allowed Failure</b>: The package lists HHVM as a build, but failures for HHVM are allowed.</li>
+            <li><b>Supported</b>: The package has 'hhvm' listed under 'php' and it is <b>not</b> a allowed failure.</li>
+        </ul>
+    </p>
+
+    <p>
+        For every version of a package, this information was fetched and stored in a database. For the "dev" versions,
+        the information will be updated if a newer commit reference is found.
+    </p>
+
+    <p>
+        The progress bar on the frontpage is showing a package as green, when at least <b>one</b> version/branch is supporting HHVM.
+        This is equal to orange, if the package supports HHVM at least as a allowed failure.
+        Any package that is red, does not build against HHVM at all.
+    </p>
+
+    <p>
+        Projects, that do not have a .travis.yml file, or that are not configured as "language: php", will be ignored.
+    </p>
+
+    <p>
+        It is intended to <b>not show</b> list of packages which are not supporting HHVM.
+        This site should not be used to provide some sort of pressure on these packages.
+        If you want to have HHVM support in a package, talk to the maintainers or try to provide it yourself, it ain't that hard!
+    </p>
+
+{% endblock %}

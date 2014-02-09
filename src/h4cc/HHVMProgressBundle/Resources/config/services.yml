@@ -1,0 +1,70 @@
+parameters:
+#    h4cc_hhvm_progress.example.class: h4cc\HHVMProgressBundle\Example
+
+services:
+
+#--- API
+
+    h4cc_hhvm_progress.api.packagist:
+        class: h4cc\HHVMProgressBundle\Services\PackagistApi
+
+
+#--- Packages
+
+    h4cc_hhvm_progress.package.updater:
+        class: h4cc\HHVMProgressBundle\Services\PackageUpdater
+        arguments:
+          - @h4cc_hhvm_progress.api.packagist
+          - @h4cc_hhvm_progress.repos.package_version
+          - @h4cc_hhvm_progress.travis_fetcher
+          - @logger
+
+    h4cc_hhvm_progress.package.stats:
+        class: h4cc\HHVMProgressBundle\Services\PackageStats
+        arguments:
+          - @h4cc_hhvm_progress.repos.package_version
+
+
+#--- Travis Fetcher
+
+    h4cc_hhvm_progress.travis_fetcher:
+        class: h4cc\HHVMProgressBundle\Services\TravisFetcher
+        arguments:
+          - @logger
+          - @h4cc_hhvm_progress.travis_fetcher.github
+
+    h4cc_hhvm_progress.travis_fetcher.github:
+        class: h4cc\HHVMProgressBundle\Services\TravisFetcher\Github
+        arguments:
+          - @h4cc_hhvm_progress.github_client
+          - @logger
+
+#--- Repos ---
+
+    h4cc_hhvm_progress.repos.package_version:
+        class: h4cc\HHVMProgressBundle\Entity\PackageVersionRepository
+        arguments:
+          - @h4cc_hhvm_progress.doctrine_repo.text_blocks
+          - @h4cc_hhvm_progress.orm.entity_manager
+
+
+#--- Internals
+
+    h4cc_hhvm_progress.github_client:
+        class: Github\Client
+        calls:
+          - [authenticate, [%github_token%, "http_token"]]
+
+
+    # Internal Doctrine Repo.
+    h4cc_hhvm_progress.doctrine_repo.text_blocks:
+        public: false
+        class: Doctrine\ORM\EntityRepository
+        factory_service: h4cc_hhvm_progress.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - h4cc\HHVMProgressBundle\Entity\PackageVersion
+
+    # Internal Alias for the entity manager we are using.
+    h4cc_hhvm_progress.orm.entity_manager:
+        alias: "doctrine.orm.entity_manager"

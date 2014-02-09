@@ -1,0 +1,45 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>HHVM compatibility result</h1>
+
+    <p>We checked your composer.lock against our database. This is the result:</p>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Name / Description</th>
+            <th>Version</th>
+            <th>HHVM Support</th>
+            <th>Dev</th>
+        </tr>
+        {% for version in result %}
+            <tr class="
+        {% if version.hhvm_status == -2 %}active{% endif %}
+        {% if version.hhvm_status == -1 %}success{% endif %}
+        {% if version.hhvm_status == 1 %}danger{% endif %}
+        {% if version.hhvm_status == 2 %}warning{% endif %}
+        {% if version.hhvm_status == 3 %}success{% endif %}
+        ">
+                <td>
+                    <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': version.name}) }}">
+                        {{ version.name }}
+                    </a>
+                    <br/>
+                    <small>{{ version.description }}</small></td>
+                <td>{{ version.version }}</td>
+                <td>
+                    {% if version.hhvm_status == -2 %}Unknown&nbsp;status{% endif %}
+                    {% if version.hhvm_status == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
+                    {% if version.hhvm_status == 1 %}Not&nbsp;supported{% endif %}
+                    {% if version.hhvm_status == 2 %}Tested&nbsp;as allowed&nbsp;failure{% endif %}
+                    {% if version.hhvm_status == 3 %}Supported{% endif %}
+                </td>
+                <td>
+                    {% if version.dev %}Yes{% else %}No{% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

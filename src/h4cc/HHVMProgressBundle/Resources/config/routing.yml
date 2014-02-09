@@ -1,0 +1,41 @@
+
+#--- Page
+
+h4cc_hhvm_progress_homepage:
+    pattern:  /
+    defaults: { _controller: h4ccHHVMProgressBundle:Page:index }
+
+h4cc_hhvm_progress_about:
+    pattern:  /about
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    h4ccHHVMProgressBundle:Page:about.html.twig
+
+#--- Packages
+
+h4cc_hhvm_progress_packages_supporting:
+    pattern:  /supporting-hhvm
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:listSupporting }
+
+h4cc_hhvm_progress_packages_allowed_failure:
+    pattern:  /supporting-hhvm-as-allowed-failure
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:listAllowedFailure }
+
+h4cc_hhvm_progress_packages_show:
+    pattern:  /package/{name}
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:showPackage }
+    requirements:
+        name: .+
+
+#--- ComposerCheck
+
+h4cc_hhvm_progress_composer_form:
+    pattern:  /composer-lock-upload
+    defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:form }
+    methods:  [GET]
+
+h4cc_hhvm_progress_composer_check:
+    pattern:  /composer-lock-upload
+    defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:check }
+    methods:  [POST]
+

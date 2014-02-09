@@ -9,13 +9,12 @@ class AppKernel extends Kernel
     {
         $bundles = array(
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            //new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
-            new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-            new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            //new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+            new h4cc\HHVMProgressBundle\h4ccHHVMProgressBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
