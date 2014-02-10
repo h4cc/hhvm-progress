@@ -7,6 +7,10 @@
 
     <h1>Package {{ name }}</h1>
 
+    {% if versions %}
+        <p>More about this package on <a href="https://packagist.org/packages/{{ (versions|first).name }}">Packagist</a></p>
+    {% endif %}
+
     <table class="table table-bordered">
         <tr>
             <th>Name</th>

@@ -25,6 +25,9 @@
                     <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': version.name}) }}">
                         {{ version.name }}
                     </a>
+                    <a href="https://packagist.org/packages/{{ version.name }}">
+                        <img src="{{ asset('images/packagist.ico') }}" alt="{{ version.name }} on Packagist" />
+                    </a>
                     <br/>
                     <small>{{ version.description }}</small></td>
                 <td>{{ version.version }}</td>

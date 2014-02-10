@@ -19,6 +19,9 @@
                     <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': package.name}) }}">
                         {{ package.name }}
                     </a>
+                    <a href="https://packagist.org/packages/{{ package.name }}">
+                        <img src="{{ asset('images/packagist.ico') }}" alt="{{ package.name }} on Packagist" />
+                    </a>
                 </td>
                 <td>{{ package.description }}</td>
             </tr>
