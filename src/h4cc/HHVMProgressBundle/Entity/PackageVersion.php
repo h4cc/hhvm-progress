@@ -51,6 +51,13 @@ class PackageVersion
     private $version;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+     */
+    private $type;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="hhvm_status", type="integer")
@@ -135,6 +142,22 @@ class PackageVersion
     public function getVersion()
     {
         return $this->version;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**

@@ -64,7 +64,7 @@ class PackageUpdater
             $this->versions->removeByNameAndVersion($name, $versionNumber);
 
             $this->logger->info("Adding $name@$versionNumber with hhvmStatus $hhvmStatus");
-            $this->versions->add($name, $version->getDescription(), $versionNumber, $version->getSource()->getReference(), $hhvmStatus);
+            $this->versions->add($name, $version->getType(), $version->getDescription(), $versionNumber, $version->getSource()->getReference(), $hhvmStatus);
         }else{
             $this->logger->info("No hhvmStatus info found for $name@$versionNumber");
         }

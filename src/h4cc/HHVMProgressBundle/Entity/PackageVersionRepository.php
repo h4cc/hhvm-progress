@@ -96,9 +96,10 @@ class PackageVersionRepository
         ));
     }
 
-    public function add($name, $description, $version, $gitReference, $status) {
+    public function add($name, $type, $description, $version, $gitReference, $status) {
         $paketVersion = new PackageVersion();
         $paketVersion->setName($name);
+        $paketVersion->setType($type);
         $paketVersion->setDescription($description);
         $paketVersion->setVersion($version);
         $paketVersion->setGitReference($gitReference);

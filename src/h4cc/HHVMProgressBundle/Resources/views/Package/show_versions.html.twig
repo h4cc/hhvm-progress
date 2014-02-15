@@ -14,6 +14,7 @@
     <table class="table table-bordered">
         <tr>
             <th>Name</th>
+            <th>Type</th>
             <th>Version</th>
             <th>HHVM Support</th>
         </tr>
@@ -24,7 +25,8 @@
         {% if version.hhvmStatus == 3 %}success{% endif %}
         ">
             <td>{{ version.name }}</td>
-            <td>{{ version.version }}</td>
+            <td>{{ version.type }}</td>
+            <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
             <td>
                 {% if version.hhvmStatus == 1 %}Not supported{% endif %}
                 {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
