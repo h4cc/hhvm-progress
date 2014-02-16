@@ -6,6 +6,7 @@ namespace h4cc\HHVMProgressBundle\Services;
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
 use Packagist\Api\Result\Package\Version;
+use Packagist\Api\Result\Package;
 use Psr\Log\LoggerInterface;
 
 class PackageUpdater
@@ -37,6 +38,9 @@ class PackageUpdater
     public function updatePackage($name) {
         try {
             $infos = $this->packagist->getInfosByName($name);
+
+            $this->deleteAllVersionsForPackageThatDoesNotExistAnymore($infos);
+
             foreach($infos->getVersions() as $version) {
                 $this->updatePackageVersion($name, $version);
             }
@@ -45,6 +49,24 @@ class PackageUpdater
             $this->logger->debug($e);
 
             throw $e;
+        }
+    }
+
+    protected function deleteAllVersionsForPackageThatDoesNotExistAnymore(Package $package) {
+        // List all versions
+        $versions = array();
+        foreach($package->getVersions() as $version) {
+            $versions[] = $version->getVersionNormalized();
+        }
+
+        // Select all package versions that are not in given versions for package.
+        $versionsForDeletion = $this->versions->getAllForNameWhereVersionNot($package->getName(), $versions);
+
+        // Delete all versions
+        foreach($versionsForDeletion as $versionToDelete) {
+            $this->logger->info("Deleting version ".$versionToDelete->getName()." @ ".$version->getVersion().", because packagist does not list it anymore.");
+
+            $this->versions->remove($versionToDelete);
         }
     }
 
@@ -75,7 +97,7 @@ class PackageUpdater
         // Check if "type" is not yet set.
         $packageVersion = $this->versions->get($name, $version->getVersionNormalized());
         if($packageVersion && !$packageVersion->getType()) {
-            $this->logger->info("Need to update $name, because of missing type tag");
+            $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing type tag");
 
             return true;
         }

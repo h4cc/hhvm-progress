@@ -10,6 +10,11 @@ class PageController extends Controller
     {
         $stats = $this->get('h4cc_hhvm_progress.package.stats')->getStatsByHHVMState();
 
+        if(0 == $stats['total']) {
+            // Avoid division by zero errors.
+            $stats['total'] = 1;
+        }
+
         // Calculate percentages of progress bars.
         $stats['supported_percent'] = max(5, $stats['supported'] / $stats['total'] * 100);
         $stats['allowed_failure_percent'] = max(5, $stats['allowed_failure'] / $stats['total'] * 100);

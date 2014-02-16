@@ -4,6 +4,7 @@ namespace h4cc\HHVMProgressBundle\Entity;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\DBAL\Types\Type;
 
 
 class PackageVersionRepository
@@ -32,6 +33,19 @@ class PackageVersionRepository
         $query->orderBy('v.version', 'DESC');
 
         $query->setParameter(1, $name);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getAllForNameWhereVersionNot($name, array $versions) {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('v');
+
+        $query->where($query->expr()->eq('v.name', ':name'));
+        $query->setParameter('name', $name);
+
+        $query->andWhere($query->expr()->notIn('v.version', ':versions'));
+        $query->setParameter('versions', $versions);
 
         return $query->getQuery()->getResult();
     }
@@ -84,8 +98,7 @@ class PackageVersionRepository
           'version' => $versionString,
         ));
         if($version) {
-            $this->om->remove($version);
-            $this->om->flush();
+            $this->remove($version);
         }
     }
 
@@ -106,6 +119,11 @@ class PackageVersionRepository
         $paketVersion->setHhvmStatus($status);
 
         $this->om->persist($paketVersion);
+        $this->om->flush();
+    }
+
+    public function remove(PackageVersion $version) {
+        $this->om->remove($version);
         $this->om->flush();
     }
 }

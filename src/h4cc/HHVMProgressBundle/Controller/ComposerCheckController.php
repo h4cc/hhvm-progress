@@ -63,6 +63,7 @@ class ComposerCheckController extends Controller
         foreach($data['packages'] as $package) {
             $packages[$package['name']] = array(
                 'name' => $package['name'],
+                'type' => $package['type'],
                 'version' => $versionParser->normalize($package['version']),
                 'description' => $package['description'],
                 'dev' => false,
@@ -72,6 +73,7 @@ class ComposerCheckController extends Controller
         foreach($data['packages-dev'] as $package) {
             $packages[$package['name']] = array(
               'name' => $package['name'],
+              'type' => $package['type'],
               'version' => $versionParser->normalize($package['version']),
               'description' => $package['description'],
               'dev' => true,
