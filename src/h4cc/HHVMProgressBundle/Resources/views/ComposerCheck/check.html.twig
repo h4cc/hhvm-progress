@@ -30,7 +30,7 @@
                     </a>
                     <br/>
                     <small>{{ version.description }}</small></td>
-                <td>{{ version.version }}<br/>{{ version.type }}</td>
+                <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}<br/>{{ version.type }}</td>
                 <td>
                     {% if version.hhvm_status == -2 %}Unknown&nbsp;status{% endif %}
                     {% if version.hhvm_status == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
