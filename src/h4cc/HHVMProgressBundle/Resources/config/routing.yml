@@ -39,3 +39,16 @@ h4cc_hhvm_progress_composer_check:
     defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:check }
     methods:  [POST]
 
+
+#--- Search
+
+h4cc_hhvm_progress_search_form:
+    pattern:  /search
+    defaults: { _controller: h4ccHHVMProgressBundle:Search:form }
+    methods:  [GET]
+
+h4cc_hhvm_progress_search_result:
+    pattern:  /search
+    defaults: { _controller: h4ccHHVMProgressBundle:Search:result }
+    methods:  [POST]
+

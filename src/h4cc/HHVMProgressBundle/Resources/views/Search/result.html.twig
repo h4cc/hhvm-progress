@@ -2,10 +2,11 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <h1>Search for packages</h1>
 
-    {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
+    {% include 'h4ccHHVMProgressBundle:includes:search_form.html.twig' %}
 
-    <h1>Packages working to support HHVM</h1>
+    <h2>Result:</h2>
 
     {% include 'h4ccHHVMProgressBundle:includes:package_version_table.html.twig' with {'packages': packages} %}
 

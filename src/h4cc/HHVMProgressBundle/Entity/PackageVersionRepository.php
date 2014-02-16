@@ -24,6 +24,20 @@ class PackageVersionRepository
         $this->om = $om;
     }
 
+    public function findWhereNameContains($pattern) {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('v');
+
+        $query->select('v');
+        $query->where('v.name LIKE :pattern');
+        $query->orderBy('v.name', 'DESC');
+        $query->groupBy('v.name');
+
+        $query->setParameter('pattern', "%$pattern%");
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getByName($name) {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('v');

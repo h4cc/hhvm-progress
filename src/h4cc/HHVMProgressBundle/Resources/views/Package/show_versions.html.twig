@@ -7,16 +7,15 @@
 
     <h1>Package {{ name }}</h1>
 
-    {% if versions %}
-        <p>More about this package on <a href="https://packagist.org/packages/{{ (versions|first).name }}">Packagist</a></p>
-    {% endif %}
+    <p>More about this package on <a href="https://packagist.org/packages/{{ name }}">Packagist</a></p>
 
+    {% if versions %}
     <table class="table table-bordered">
         <tr>
             <th>Name</th>
             <th>Type</th>
             <th>Version</th>
-            <th>HHVM Support</th>
+            <th>HHVM&nbsp;Support</th>
         </tr>
     {% for version in versions %}
         <tr class="
@@ -28,9 +27,9 @@
             <td>{{ version.type }}</td>
             <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
             <td>
-                {% if version.hhvmStatus == 1 %}Not supported{% endif %}
+                {% if version.hhvmStatus == 1 %}Not&nbsp;supported{% endif %}
                 {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                        Tested as allowed failure
+                        Tested&nbsp;as allowed&nbsp;failure
                     </a>
                 {% endif %}
                 {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
@@ -41,5 +40,8 @@
         </tr>
     {% endfor %}
     </table>
+    {% else %}
+        <p>No versions found :(</p>
+    {% endif %}
 
 {% endblock %}

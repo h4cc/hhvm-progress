@@ -1,0 +1,23 @@
+{% if packages %}
+    <table class="table table-hover table-striped table-bordered">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        {% for package in packages %}
+            <tr>
+                <td>
+                    <a href="https://packagist.org/packages/{{ package.name }}" class="pull-right">
+                        <img src="{{ asset('images/packagist.ico') }}" alt="{{ package.name }} on Packagist" />
+                    </a>
+                    <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': package.name}) }}">
+                        {{ package.name }}
+                    </a>
+                </td>
+                <td>{{ package.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>No packages to show :(</p>
+{%  endif %}
