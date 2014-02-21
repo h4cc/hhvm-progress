@@ -1,0 +1,53 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Help spread the HHVM!</h1>
+
+    <p>
+        If you want to spread the usage of HHVM or simply want to test if HHVM would work with your project/ libraries,
+        have a look at the following instructions.
+    </p>
+
+    <h2>Add HHVM to a travis-ci build</h2>
+
+    <p>
+        This is a common travis-ci template for PHP projects using composer.
+        <script src="https://gist.github.com/h4cc/9141671.js"></script>
+        Having this template in your github repository as '<i>.travis.yml</i>' and connecting that repo with <a href="https://travis-ci.org/">travis-ci</a>, will do the following:
+        <ul>
+            <li>Run a build for each latest version of PHP 5.3, 5.4, 5.5, 5.6 and HHVM.</li>
+            <li>Install dependencys with composer.</li>
+            <li>Run the Tests from folder 'tests' with PHPUnit and output the coverage as text.</li>
+            <li>If the build fails and the php version HHVM, the build will not be broken.</li>
+        </ul>
+    </p>
+
+    <h2>Add HHVM to a foreign project</h2>
+
+    <p>
+        If there is foreign project you want to support HHVM, or simply let it test against HHVM. Try the following steps:
+        <ol>
+            <li>First, check if there is not already a HHVM pull-request.</li>
+            <li>Go to the github.com repository of the project.</li>
+            <li>Open the '.travis.yml' file and click on "Edit"</li>
+            <li>Add 'hhvm' to the 'php:' section.</li>
+            <li>Add 'php: hhvm' to the ' allow_failures:' section under 'matrix:' section.</li>
+            <li>Write in the first text box under the editor: 'Testing HHVM support.'</li>
+            <li>Then click on "Propose file change".</li>
+            <li>On the next page, click on "Send pull request".</li>
+        </ol>
+        After doing this, the maintainers of the project will get a notification about your "Pull request".
+        <br>
+        Parallel to this, travis will fetch your pull request and run the build against hhvm.
+        This way the maintainers can see the result of the HHVM build, before they have to merge it.
+    </p>
+
+    <p>
+        <b>Dont forget</b>:
+        <br/>
+        Always be nice and don't try to force people to use hhvm.
+        In some projects supporting HHVM is simply not an option.
+    </p>
+
+{% endblock %}

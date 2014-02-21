@@ -105,12 +105,12 @@
     <div class="container">
         <div class="header">
             <ul class="nav nav-pills pull-right">
-                <li><a href="{{ path('h4cc_hhvm_progress_homepage') }}">Home</a></li>
                 <li><a href="{{ path('h4cc_hhvm_progress_composer_form') }}">Check</a></li>
                 <li><a href="{{ path('h4cc_hhvm_progress_search_form') }}">Search</a></li>
+                <li><a href="{{ path('h4cc_hhvm_progress_help') }}">Help</a></li>
                 <li><a href="{{ path('h4cc_hhvm_progress_about') }}">About</a></li>
             </ul>
-            <h3 class="text-muted">HHVM Support in PHP Projects</h3>
+            <a href="{{ path('h4cc_hhvm_progress_homepage') }}"><h3 class="text-muted">HHVM Support in PHP Projects</h3></a>
         </div>
 
         {% block body %}{% endblock %}
@@ -122,5 +122,6 @@
     </div> <!-- /container -->
 
         {% block javascripts %}{% endblock %}
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     </body>
 </html>

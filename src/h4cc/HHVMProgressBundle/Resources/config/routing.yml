@@ -11,6 +11,12 @@ h4cc_hhvm_progress_about:
         _controller: FrameworkBundle:Template:template
         template:    h4ccHHVMProgressBundle:Page:about.html.twig
 
+h4cc_hhvm_progress_help:
+    pattern:  /help
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template:    h4ccHHVMProgressBundle:Page:help.html.twig
+
 #--- Packages
 
 h4cc_hhvm_progress_packages_supporting:
