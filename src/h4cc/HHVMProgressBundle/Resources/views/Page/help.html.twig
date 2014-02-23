@@ -16,10 +16,11 @@
         <script src="https://gist.github.com/h4cc/9141671.js"></script>
         Having this template in your github repository as '<i>.travis.yml</i>' and connecting that repo with <a href="https://travis-ci.org/">travis-ci</a>, will do the following:
         <ul>
+            <li>On each Commit / Pull Request a new Travis build will be triggered.</li>
             <li>Run a build for each latest version of PHP 5.3, 5.4, 5.5, 5.6 and HHVM.</li>
-            <li>Install dependencys with composer.</li>
+            <li>Installs dependencies with composer.</li>
             <li>Run the Tests from folder 'tests' with PHPUnit and output the coverage as text.</li>
-            <li>If the build fails and the php version HHVM, the build will not be broken.</li>
+            <li>If the build fails and the PHP runtime is HHVM, the build will not be broken.</li>
         </ul>
     </p>
 

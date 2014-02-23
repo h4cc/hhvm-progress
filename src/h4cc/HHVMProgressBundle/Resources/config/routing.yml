@@ -45,6 +45,9 @@ h4cc_hhvm_progress_composer_check:
     defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:check }
     methods:  [POST]
 
+h4cc_hhvm_progress_composer_graph:
+    pattern:  /composer-graph
+    defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:graph }
 
 #--- Search
 

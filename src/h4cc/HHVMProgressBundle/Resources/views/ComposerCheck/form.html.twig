@@ -4,17 +4,23 @@
 {% block body %}
     <h1>Upload composer.lock</h1>
 
-    <p>Upload your composer.lock file, to see which of your dependencies support HHVM.</p>
-
-    <p>
+   <div>
 
         <form action="{{ path('h4cc_hhvm_progress_composer_form') }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="composer_lock">
+
+            <p>Upload your <b>composer.lock</b> file, to see which of your dependencies support HHVM.</p>
+            <input type="file" name="composer_lock" required>
             <br/>
+
+            <p><b>Optional</b>: When you also upload your <b>composer.json</b> file, a dependency graph can be generated.</p>
+            <input type="file" name="composer">
+            <br/>
+
+
             <button type="submit" class="btn btn-primary">Upload</button>
         </form>
 
-    </p>
+    </div>
 
     <p>
         <em>We do <b>not</b> store the content of your composer.lock file or process it otherwise than stated.</em>

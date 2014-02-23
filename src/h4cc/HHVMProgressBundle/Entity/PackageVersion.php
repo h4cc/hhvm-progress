@@ -14,10 +14,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PackageVersion
 {
+    /** HHVM is not in travis.yml */
     const HHVM_STATUS_NONE = 1;
+
+    /** HHVM is a allowed failure build. */
     const HHVM_STATUS_ALLOWED_FAILURE = 2;
+
+    /** HHVM is a full build. */
     const HHVM_STATUS_SUPPORTED = 3;
+
+    /** Not a PHP build. */
     const HHVM_STATUS_NO_PHP = -1;
+
+    /** Could not determine status, like missing travis.yml */
     const HHVM_STATUS_UNKNOWN = -2;
 
     /**

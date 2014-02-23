@@ -4,6 +4,15 @@
 {% block body %}
     <h1>HHVM compatibility result</h1>
 
+    {% if show_graph %}
+        <p>Click on the following links to see the dependency graphs:</p>
+        <div class="row marketing">
+            <a class="btn btn-info" class="pull-right" target="_blank" href="{{ path('h4cc_hhvm_progress_composer_graph') }}"><b>Without</b> development dependencies</a>
+            &nbsp;&nbsp;&nbsp;
+                <a class="btn btn-info" target="_blank" href="{{ path('h4cc_hhvm_progress_composer_graph', {"dev": true}) }}"><b>With</b> development dependencies</a>
+        </div>
+    {% endif %}
+
     <p>We checked your composer.lock against our database. This is the result:</p>
 
     <table class="table table-bordered">

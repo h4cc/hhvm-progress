@@ -1,0 +1,11 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <h1>Error: Can not generate graph</h1>
+
+    <p>The dependency graph could not be generated, because you did not upload your composer.lock <b>and</b> composer.json files.</p>
+
+    <p>Click on <a href="{{ path('h4cc_hhvm_progress_composer_form') }}">Check</a> to do so.</p>
+
+{% endblock %}
