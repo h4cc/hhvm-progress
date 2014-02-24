@@ -14,9 +14,10 @@
         To provide this information, we list all available packages from packagist.org and try to fetch the .travis.yml file from github for all listed versions.
         The result of this can be as followed:
         <ul>
-            <li><b>Not Supported</b>: The package is a "language: php" travis build, but does not build against HHVM at all.</li>
-            <li><b>Allowed Failure</b>: The package lists HHVM as a build, but failures for HHVM are allowed.</li>
-            <li><b>Supported</b>: The package has 'hhvm' listed under 'php' and it is <b>not</b> a allowed failure.</li>
+            <li><span class="label label-danger"><b>Not Supported</b></span>: The package is a "language: php" travis build, but does not build against HHVM at all.</li>
+            <li><span class="label label-warning"><b>Allowed Failure</b></span>: The package lists HHVM as a build, but failures for HHVM are allowed.</li>
+            <li><span class="label label-success"><b>Supported</b></span>: The package has 'hhvm' listed under 'php' and it is <b>not</b> a allowed failure.</li>
+    <li><span class="label label-default"><b>Unknown</b></span>: The package does not fit to any of the previous specifications.</li>
         </ul>
     </p>
 
