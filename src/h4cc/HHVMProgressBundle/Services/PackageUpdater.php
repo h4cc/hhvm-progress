@@ -74,22 +74,24 @@ class PackageUpdater
         if($this->needToUpdatePackageVersion($name, $version)) {
             // Fetch status
             $hhvmStatus = $this->fetcher->fetchTravisHHVMStatus($version);
-            // Add Version
-            $this->storePackageVersion($name, $version, $hhvmStatus);
+            $this->logger->debug("Fetched HHVM status ".(int)$hhvmStatus." for $name");
+            if($hhvmStatus) {
+                // Add Version
+                $this->storePackageVersion($name, $version, $hhvmStatus);
+            }else{
+                $this->logger->info("No hhvmStatus info found for $name@$versionNumber");
+            }
         }
     }
 
     protected function storePackageVersion($name, Version $version, $hhvmStatus) {
         $versionNumber = $version->getVersionNormalized();
-        if($hhvmStatus) {
-            // Remove a name/version previous, because the git_reference might have changed.
-            $this->versions->removeByNameAndVersion($name, $versionNumber);
 
-            $this->logger->info("Adding $name@$versionNumber with hhvmStatus $hhvmStatus");
-            $this->versions->add($name, $version->getType(), $version->getDescription(), $versionNumber, $version->getSource()->getReference(), $hhvmStatus);
-        }else{
-            $this->logger->info("No hhvmStatus info found for $name@$versionNumber");
-        }
+        // Remove a name/version previous, because the git_reference might have changed.
+        $this->versions->removeByNameAndVersion($name, $versionNumber);
+
+        $this->logger->info("Adding $name@$versionNumber with hhvmStatus $hhvmStatus");
+        $this->versions->add($name, $version->getType(), $version->getDescription(), $versionNumber, $version->getSource()->getReference(), $hhvmStatus);
     }
 
     protected function needToUpdatePackageVersion($name, Version $version) {

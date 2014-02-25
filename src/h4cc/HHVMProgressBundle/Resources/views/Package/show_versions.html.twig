@@ -54,6 +54,8 @@
         </tr>
     {% for version in versions %}
         <tr class="
+        {% if version.hhvmStatus == -2 %}active{% endif %}
+        {% if version.hhvmStatus == -1 %}active{% endif %}
         {% if version.hhvmStatus == 1 %}danger{% endif %}
         {% if version.hhvmStatus == 2 %}warning{% endif %}
         {% if version.hhvmStatus == 3 %}success{% endif %}
@@ -62,6 +64,8 @@
             <td>{{ version.type }}</td>
             <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
             <td>
+                {% if version.hhvmStatus == -2 %}Unknown&nbsp;status{% endif %}
+                {% if version.hhvmStatus == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
                 {% if version.hhvmStatus == 1 %}Not&nbsp;supported{% endif %}
                 {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
                         Tested&nbsp;as allowed&nbsp;failure

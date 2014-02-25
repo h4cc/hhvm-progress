@@ -35,26 +35,25 @@ class TravisFetcher
             // Try to fetch from github
             if(false !== stripos($url, 'github.com')) {
                 if(preg_match('@github.com/(.+)/(.+)@', $url, $matches)) {
-                    $content = $this->github->fetch($matches[1], basename($matches[2], '.git'), $source->getReference());
+                    $user = $matches[1];
+                    $repo = basename($matches[2], '.git');
+                    $this->logger->debug("Fetching travis file from github for $user/$repo.");
+                    $content = $this->github->fetch($user, $repo, $source->getReference());
                 }
             }
         }
 
-        // There is only GitHub as a source for travis-ci tests.
-        //if(!$fetched) {
-        //    $this->logger->warning("Clould not find fetcher for source: ".var_export($source, true));
-        //}
+        $this->logger->debug("Fetched .travis.yml content: '$content'");
 
         if($content) {
             return $this->getHHVMStatusFromTravisConfig($content);
         }
 
-        return false;
+        // If there was no exception, there was simply no travis.yml file.
+        return PackageVersion::HHVM_STATUS_UNKNOWN;
     }
 
     protected function getHHVMStatusFromTravisConfig($content) {
-        $supports = false;
-
         try {
             $data = Yaml::parse($content);
         }catch(\Exception $e) {
