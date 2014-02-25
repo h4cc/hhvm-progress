@@ -17,6 +17,7 @@ h4cc_hhvm_progress_help:
         _controller: FrameworkBundle:Template:template
         template:    h4ccHHVMProgressBundle:Page:help.html.twig
 
+
 #--- Packages
 
 h4cc_hhvm_progress_packages_supporting:
@@ -32,6 +33,11 @@ h4cc_hhvm_progress_packages_show:
     defaults: { _controller: h4ccHHVMProgressBundle:Package:showPackage }
     requirements:
         name: .+
+
+h4cc_hhvm_progress_packages_needing_help:
+    pattern:  /needing-help
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:needingHelp }
+
 
 #--- ComposerCheck
 

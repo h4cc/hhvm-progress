@@ -1,0 +1,18 @@
+
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
+
+    <h1>Packages that need some help</h1>
+
+    <p>
+        This list contains all packages that do not build against HHVM or have no travis.yml file.
+        <br/>
+        Check out the <a href="{{ path('h4cc_hhvm_progress_help') }}">Help page</a> for instructions.
+    </p>
+
+    {% include 'h4ccHHVMProgressBundle:includes:package_version_table.html.twig' with {'packages': packages} %}
+
+{% endblock %}

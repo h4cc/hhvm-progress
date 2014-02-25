@@ -21,6 +21,21 @@ class PackageController extends Controller
         return $this->render('h4ccHHVMProgressBundle:Package:list_allowed_failure.html.twig', array('packages' => $packages));
     }
 
+    public function needingHelpAction()
+    {
+        $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
+
+        $packages = array_merge(
+            $repo->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_UNKNOWN),
+            $repo->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_NONE)
+        );
+
+        return $this->render(
+                    'h4ccHHVMProgressBundle:Package:needing_help.html.twig',
+                    array('packages' => $packages)
+        );
+    }
+
     public function showPackageAction($name)
     {
         $versions = $this->get('h4cc_hhvm_progress.repos.package_version')->getByName($name);
