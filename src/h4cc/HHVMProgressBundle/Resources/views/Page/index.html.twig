@@ -32,10 +32,17 @@
     </div>
 
     <p class="lead">
-        Green is supporting HHVM, orange is working towards HHVM and red is not using HHVM to run their tests.
+        Green is <span class="hhvm_supported">supporting HHVM</span>, orange is <span class="hhvm_allowed_failure">working towards HHVM</span> and red is <span class="hhvm_not_supported">not using HHVM</span> to run their tests.
     </p>
 </div>
 
     {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
+
+    <div>
+        <div class="alert alert-info">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <a href="{{ path('h4cc_hhvm_progress_composer_form') }}" class="alert-link">Upload your composer.lock and see if your dependencies support HHVM!</a>
+        </div>
+    </div>
 
 {% endblock %}

@@ -30,7 +30,7 @@ class PackageVersionRepository
 
         $query->select('v');
         $query->where('v.name LIKE :pattern');
-        $query->orderBy('v.name', 'DESC');
+        $query->orderBy('v.name', 'ASC');
         $query->groupBy('v.name');
 
         $query->setParameter('pattern', "%$pattern%");
@@ -116,6 +116,11 @@ class PackageVersionRepository
         }
     }
 
+    /**
+     * @param $name
+     * @param $version
+     * @return PackageVersion
+     */
     public function get($name, $version) {
         return $this->repo->findOneBy(array(
           'name' => $name,

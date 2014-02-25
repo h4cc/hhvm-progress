@@ -79,6 +79,28 @@
                 color: white;
             }
 
+            .hhvm_supported {
+                color: #449d44;
+            }
+
+            .hhvm_allowed_failure {
+                color: #ec971f;
+            }
+
+            .hhvm_not_supported {
+                color: #DD1144;
+            }
+
+            /* This is bad, and i should feeld bad :( */
+            .popover{
+                max-width: 330px;
+                width: 330px;
+            }
+
+            ul.nav li a {
+              background-color: #efefef;
+            }
+
             /* Responsive: Portrait tablets and up */
             @media screen and (min-width: 768px) {
                 /* Remove the padding we set earlier */
@@ -104,13 +126,24 @@
     <body>
     <div class="container">
         <div class="header">
+            {% set route = app.request.get('_route') %}
             <ul class="nav nav-pills pull-right">
-                <li><a href="{{ path('h4cc_hhvm_progress_composer_form') }}">Check</a></li>
-                <li><a href="{{ path('h4cc_hhvm_progress_search_form') }}">Search</a></li>
-                <li><a href="{{ path('h4cc_hhvm_progress_help') }}">Help</a></li>
-                <li><a href="{{ path('h4cc_hhvm_progress_about') }}">About</a></li>
+                <li class="{% if route == 'h4cc_hhvm_progress_composer_form' %}active{% endif %}">
+                    <a href="{{ path('h4cc_hhvm_progress_composer_form') }}">Check</a>
+                </li>
+                <li class="{% if route == 'h4cc_hhvm_progress_search_form' %}active{% endif %}">
+                    <a href="{{ path('h4cc_hhvm_progress_search_form') }}">Search</a>
+                </li>
+                <li class="{% if route == 'h4cc_hhvm_progress_help' %}active{% endif %}">
+                    <a href="{{ path('h4cc_hhvm_progress_help') }}">Help</a>
+                </li>
+                <li class="{% if route == 'h4cc_hhvm_progress_about' %}active{% endif %}">
+                    <a href="{{ path('h4cc_hhvm_progress_about') }}">About</a>
+                </li>
             </ul>
-            <a href="{{ path('h4cc_hhvm_progress_homepage') }}"><h3 class="text-muted">HHVM Support in PHP Projects</h3></a>
+            <a href="{{ path('h4cc_hhvm_progress_homepage') }}">
+                <h3 class="text-muted">HHVM Support in PHP Projects</h3>
+            </a>
         </div>
 
         {% block body %}{% endblock %}
@@ -121,7 +154,12 @@
 
     </div> <!-- /container -->
 
-        {% block javascripts %}{% endblock %}
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+    {% block javascripts %}{% endblock %}
+
     </body>
 </html>

@@ -49,6 +49,7 @@ h4cc_hhvm_progress_composer_graph:
     pattern:  /composer-graph
     defaults: { _controller: h4ccHHVMProgressBundle:ComposerCheck:graph }
 
+
 #--- Search
 
 h4cc_hhvm_progress_search_form:
@@ -61,3 +62,11 @@ h4cc_hhvm_progress_search_result:
     defaults: { _controller: h4ccHHVMProgressBundle:Search:result }
     methods:  [POST]
 
+
+#--- Badges
+
+h4cc_hhvm_progress_badges_show:
+    pattern:  /badge/{name}.png
+    defaults: { _controller: h4ccHHVMProgressBundle:Badges:show }
+    requirements:
+        name: .+
