@@ -33,6 +33,11 @@
                 <td>
                     <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': version.name}) }}">
                         {{ version.name }}
+                        {% if version.hhvm_status_max > version.hhvm_status %}
+                            <span class="my_tooltip glyphicon glyphicon-chevron-up"
+                                  data-toggle="tooltip" data-placement="right"
+                                  title="Newer and better supported version available. Consider a upgrade."></span>
+                        {% endif %}
                     </a>
                     <a href="https://packagist.org/packages/{{ version.name }}" class="pull-right">
                         <img src="{{ asset('images/packagist.ico') }}" alt="{{ version.name }} on Packagist" />
@@ -53,5 +58,15 @@
             </tr>
         {% endfor %}
     </table>
+
+{% endblock %}
+
+{% block javascripts %}
+
+    <script language="javascript" type="text/javascript">
+        $(document).ready(function() {
+            $('span.my_tooltip').tooltip();
+        });
+    </script>
 
 {% endblock %}

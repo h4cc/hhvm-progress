@@ -64,15 +64,22 @@ class ComposerCheckController extends Controller
 
         $packages = $this->getPackagesAndVersionsFromComposerLockContent($composerLockContent);
 
+        /** @var \h4cc\HHVMProgressBundle\Entity\PackageVersionRepository $versionsRepo */
         $versionsRepo = $this->get('h4cc_hhvm_progress.repos.package_version');
 
-        $checkedPackages = array_map(function(array $package) use($versionsRepo) {
+        $hhvmMaxStatus = $versionsRepo->getMaxHHVMStatusForNames();
+
+        $checkedPackages = array_map(function(array $package) use($versionsRepo, $hhvmMaxStatus) {
             /** @var PackageVersion $version */
             $version = $versionsRepo->get($package['name'], $package['version']);
             if(!$version) {
                 $package['hhvm_status'] = PackageVersion::HHVM_STATUS_UNKNOWN;
             }else{
                 $package['hhvm_status'] = $version->getHhvmStatus();
+            }
+            $package['hhvm_status_max'] = $package['hhvm_status'];
+            if(isset($hhvmMaxStatus[$package['name']])) {
+                $package['hhvm_status_max'] = $hhvmMaxStatus[$package['name']];
             }
             return $package;
         }, $packages);
