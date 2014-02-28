@@ -64,14 +64,20 @@ class PackageVersionRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getAllByHHVMStatus($hhvmStatus) {
+    /**
+     * Returns all Packages, where the HHVM status is at MAX $hhvmStatus.
+     *
+     * @param $hhvmStatus
+     * @return array
+     */
+    public function getAllByMaxHHVMStatus($hhvmStatus) {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('v');
 
         $query->select('v');
-        $query->where('v.hhvm_status = ?1');
         $query->orderBy('v.name');
         $query->groupBy('v.name');
+        $query->having('MAX(v.hhvm_status) = ?1');
 
         $query->setParameter(1, $hhvmStatus);
 

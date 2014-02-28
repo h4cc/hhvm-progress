@@ -40,9 +40,11 @@ class UpdateCommand extends ContainerAwareCommand
         // Packages for testing all three possible hhvm status.
         $packages = array(
             //'symfony/symfony',
-            //'nelmio/alice',
-            //'h4cc/alice-fixtures-bundle',
-            //'doctrine/lexer',
+            'nelmio/alice',
+            'h4cc/alice-fixtures-bundle',
+            'doctrine/lexer',
+            'behat/behat',
+            'behat/mink',
         );
         */
 

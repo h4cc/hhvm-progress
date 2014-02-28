@@ -27,7 +27,11 @@
         </div>
         <div class="progress-bar progress-bar-danger"
              style="width: {{ stats.not_supported_percent }}%;">
-            <span>{{ stats.not_supported }}</span>
+            <span>
+                <a href="{{ path('h4cc_hhvm_progress_packages_needing_help') }}">
+                    {{ stats.not_supported }}
+                </a>
+            </span>
         </div>
     </div>
 

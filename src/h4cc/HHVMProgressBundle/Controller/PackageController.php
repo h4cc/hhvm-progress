@@ -9,14 +9,14 @@ class PackageController extends Controller
 {
     public function listSupportingAction()
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_SUPPORTED);
+        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_SUPPORTED);
 
         return $this->render('h4ccHHVMProgressBundle:Package:list_supporting.html.twig', array('packages' => $packages));
     }
 
     public function listAllowedFailureAction()
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_ALLOWED_FAILURE);
+        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_ALLOWED_FAILURE);
 
         return $this->render('h4ccHHVMProgressBundle:Package:list_allowed_failure.html.twig', array('packages' => $packages));
     }
@@ -26,8 +26,8 @@ class PackageController extends Controller
         $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
 
         $packages = array_merge(
-            $repo->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_UNKNOWN),
-            $repo->getAllByHHVMStatus(PackageVersion::HHVM_STATUS_NONE)
+            $repo->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_UNKNOWN),
+            $repo->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_NONE)
         );
 
         return $this->render(
