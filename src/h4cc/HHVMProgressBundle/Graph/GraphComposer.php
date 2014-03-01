@@ -64,6 +64,10 @@ class GraphComposer
 
         $vertex = $this->layoutVertex;
 
+        if(0 === stripos($name, 'symfony/')) {
+            $name = 'symfony/symfony';
+        }
+
         /** @var PackageVersion $packageVersion */
         $packageVersion = $this->repository->get($name, $version);
 
