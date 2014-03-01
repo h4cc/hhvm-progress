@@ -39,6 +39,9 @@
                                   title="Newer and better supported version available. Consider a upgrade."></span>
                         {% endif %}
                     </a>
+                    {% if version.hint %}
+                    <span class="glyphicon glyphicon-info-sign" title="{{ version.hint }}"></span>
+                    {% endif %}
                     <a href="https://packagist.org/packages/{{ version.name }}" class="pull-right">
                         <img src="{{ asset('images/packagist.ico') }}" alt="{{ version.name }} on Packagist" />
                     </a>

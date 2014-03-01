@@ -70,16 +70,24 @@ class ComposerCheckController extends Controller
         $hhvmMaxStatus = $versionsRepo->getMaxHHVMStatusForNames();
 
         $checkedPackages = array_map(function(array $package) use($versionsRepo, $hhvmMaxStatus) {
+
+            $packageName = $package['name'];
+            $package['hint'] = '';
+            if(0 === stripos($packageName, 'symfony/')) {
+                $packageName = 'symfony/symfony';
+                $package['hint'] = 'Used HHVM status from symfony/symfony instead.';
+            }
+
             /** @var PackageVersion $version */
-            $version = $versionsRepo->get($package['name'], $package['version']);
+            $version = $versionsRepo->get($packageName, $package['version']);
             if(!$version) {
                 $package['hhvm_status'] = PackageVersion::HHVM_STATUS_UNKNOWN;
             }else{
                 $package['hhvm_status'] = $version->getHhvmStatus();
             }
             $package['hhvm_status_max'] = $package['hhvm_status'];
-            if(isset($hhvmMaxStatus[$package['name']])) {
-                $package['hhvm_status_max'] = $hhvmMaxStatus[$package['name']];
+            if(isset($hhvmMaxStatus[$packageName])) {
+                $package['hhvm_status_max'] = $hhvmMaxStatus[$packageName];
             }
             return $package;
         }, $packages);
@@ -91,6 +99,10 @@ class ComposerCheckController extends Controller
                         'show_graph' => $this->get('session')->has('composer.content')
                     )
         );
+    }
+
+    protected function getHHVMStatus($name, $version) {
+
     }
 
     protected function getPackagesAndVersionsFromComposerLockContent($content) {
