@@ -6,8 +6,12 @@
 
     {% include 'h4ccHHVMProgressBundle:includes:search_form.html.twig' %}
 
-    <h2>Result:</h2>
+    {% if pagination.count %}
 
-    {% include 'h4ccHHVMProgressBundle:includes:package_version_table.html.twig' with {'packages': packages} %}
+        <h2>Result:</h2>
+
+        {% include 'h4ccHHVMProgressBundle:includes:package_version_table.html.twig' with {'packages': pagination} %}
+
+    {% endif %}
 
 {% endblock %}

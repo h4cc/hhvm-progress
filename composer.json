@@ -32,7 +32,8 @@
         "composer/composer": "1.0.0-alpha8",
 
         "jms/composer-deps-analyzer": "dev-patch-1",
-        "clue/graph": "~0.7"
+        "clue/graph": "~0.7",
+        "knplabs/knp-paginator-bundle": "~2.4"
     },
     "scripts": {
         "post-install-cmd": [

@@ -1,4 +1,9 @@
-{% if packages %}
+{% if packages.count %}
+
+    <div class="pull-right">
+        {{ knp_pagination_render(packages) }}
+    </div>
+
     <table class="table table-hover table-striped table-bordered">
         <tr>
             <th>Name</th>
@@ -18,6 +23,15 @@
             </tr>
         {% endfor %}
     </table>
+
+    <div class="pull-right">
+        {{ knp_pagination_render(packages) }}
+    </div>
+
+    <br style="clear: both" />
+
 {% else %}
+
     <p>No packages to show :(</p>
+
 {%  endif %}

@@ -4,24 +4,31 @@ namespace h4cc\HHVMProgressBundle\Controller;
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class PackageController extends Controller
 {
-    public function listSupportingAction()
+    const PER_PAGE = 100;
+
+    public function listSupportingAction(Request $request)
     {
         $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_SUPPORTED);
 
-        return $this->render('h4ccHHVMProgressBundle:Package:list_supporting.html.twig', array('packages' => $packages));
+        $pagination = $this->paginate($packages, $request);
+
+        return $this->render('h4ccHHVMProgressBundle:Package:list_supporting.html.twig', array('pagination' => $pagination));
     }
 
-    public function listAllowedFailureAction()
+    public function listAllowedFailureAction(Request $request)
     {
         $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_ALLOWED_FAILURE);
 
-        return $this->render('h4ccHHVMProgressBundle:Package:list_allowed_failure.html.twig', array('packages' => $packages));
+        $pagination = $this->paginate($packages, $request);
+
+        return $this->render('h4ccHHVMProgressBundle:Package:list_allowed_failure.html.twig', array('pagination' => $pagination));
     }
 
-    public function needingHelpAction()
+    public function needingHelpAction(Request $request)
     {
         $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
 
@@ -30,9 +37,11 @@ class PackageController extends Controller
             $repo->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_NONE)
         );
 
+        $pagination = $this->paginate($packages, $request);
+
         return $this->render(
                     'h4ccHHVMProgressBundle:Package:needing_help.html.twig',
-                    array('packages' => $packages)
+                    array('pagination' => $pagination)
         );
     }
 
@@ -41,5 +50,10 @@ class PackageController extends Controller
         $versions = $this->get('h4cc_hhvm_progress.repos.package_version')->getByName($name);
 
         return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'versions' => $versions));
+    }
+
+    private function paginate($rows, Request $request) {
+        $paginator  = $this->get('knp_paginator');
+        return $paginator->paginate($rows, $request->query->get('page', 1), static::PER_PAGE);
     }
 }
