@@ -101,10 +101,6 @@ class ComposerCheckController extends Controller
         );
     }
 
-    protected function getHHVMStatus($name, $version) {
-
-    }
-
     protected function getPackagesAndVersionsFromComposerLockContent($content) {
         $data = $this->decodeComposerLock($content);
         if(!$data) {

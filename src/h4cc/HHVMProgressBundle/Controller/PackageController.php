@@ -4,6 +4,7 @@ namespace h4cc\HHVMProgressBundle\Controller;
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class PackageController extends Controller
@@ -43,6 +44,43 @@ class PackageController extends Controller
                     'h4ccHHVMProgressBundle:Package:needing_help.html.twig',
                     array('pagination' => $pagination)
         );
+    }
+
+    public function apiGetPackageAction($name)
+    {
+        /** @var PackageVersion[] $versions */
+        $versions = $this->get('h4cc_hhvm_progress.repos.package_version')->getByName($name);
+
+        if(!$versions) {
+            return new JsonResponse(array('error' => 404), 404);
+        }
+
+        // Get Latest version, prefer dev-master
+        $latestVersion = reset($versions);
+        foreach($versions as $version) {
+            if('9999999-dev' == $version->getVersion()) {
+                $latestVersion = $version;
+                break;
+            }
+        }
+
+        $response = array(
+            'name' => $latestVersion->getName(),
+            'description' => $latestVersion->getDescription(),
+            'versions' => array(),
+        );
+
+        foreach($versions as $version) {
+            $response['versions'][$version->getVersion()] = array(
+                'version' => $version->getVersion(),
+                'reference' => $version->getGitReference(),
+                'type' => $version->getType(),
+                'hhvm_status_string' => $version->getHhvmStatusAsString(),
+                'hhvm_status' => $version->getHhvmStatus(),
+            );
+        }
+
+        return new JsonResponse($response);
     }
 
     public function showPackageAction($name)

@@ -3,6 +3,7 @@
 namespace h4cc\HHVMProgressBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageController extends Controller
 {
@@ -21,5 +22,17 @@ class PageController extends Controller
         $stats['not_supported_percent'] = 100 - $stats['supported_percent'] - $stats['allowed_failure_percent'];
 
         return $this->render('h4ccHHVMProgressBundle:Page:index.html.twig', array('stats' => $stats));
+    }
+
+    public function scriptDownloadAction()
+    {
+        $scriptContent = file_get_contents(__DIR__ . '/../Resources/scripts/hhvm_status.php');
+
+        $response = new Response($scriptContent);
+
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->headers->set('Content-Disposition', 'attachment; filename="hhvm_status.php"');
+
+        return $response;
     }
 }

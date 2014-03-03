@@ -192,6 +192,23 @@ class PackageVersion
         return $this->hhvm_status;
     }
 
+    public function getHhvmStatusAsString()
+    {
+        switch($this->hhvm_status) {
+            case static::HHVM_STATUS_ALLOWED_FAILURE:
+                return 'partial_tested';
+            case static::HHVM_STATUS_NO_PHP:
+                return 'not_php';
+            case static::HHVM_STATUS_NONE:
+                return 'not_tested';
+            case static::HHVM_STATUS_SUPPORTED:
+                return 'tested';
+            case static::HHVM_STATUS_UNKNOWN:
+                return 'unknown';
+        }
+        throw new \RuntimeException("Unknown HHVM status: ".$this->hhvm_status);
+    }
+
     /**
      * @param string $git_reference
      */

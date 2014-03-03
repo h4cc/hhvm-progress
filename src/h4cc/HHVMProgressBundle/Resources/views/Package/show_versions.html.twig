@@ -66,13 +66,13 @@
             <td>
                 {% if version.hhvmStatus == -2 %}Unknown&nbsp;status{% endif %}
                 {% if version.hhvmStatus == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
-                {% if version.hhvmStatus == 1 %}Not&nbsp;supported{% endif %}
+                {% if version.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
                 {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                        Tested&nbsp;as allowed&nbsp;failure
+                        Partially&nbsp;tested
                     </a>
                 {% endif %}
                 {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
-                        Supported
+                        Tested
                     </a>
                 {% endif %}
             </td>

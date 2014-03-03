@@ -36,7 +36,7 @@
                         {% if version.hhvm_status_max > version.hhvm_status %}
                             <span class="my_tooltip glyphicon glyphicon-chevron-up"
                                   data-toggle="tooltip" data-placement="right"
-                                  title="Newer and better supported version available. Consider a upgrade."></span>
+                                  title="Newer version with better support available. Consider a upgrade."></span>
                         {% endif %}
                     </a>
                     {% if version.hint %}
@@ -51,9 +51,9 @@
                 <td>
                     {% if version.hhvm_status == -2 %}Unknown&nbsp;status{% endif %}
                     {% if version.hhvm_status == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
-                    {% if version.hhvm_status == 1 %}Not&nbsp;supported{% endif %}
+                    {% if version.hhvm_status == 1 %}Not&nbsp;tested{% endif %}
                     {% if version.hhvm_status == 2 %}Tested&nbsp;as allowed&nbsp;failure{% endif %}
-                    {% if version.hhvm_status == 3 %}Supported{% endif %}
+                    {% if version.hhvm_status == 3 %}Tested{% endif %}
                 </td>
                 <td>
                     {% if version.dev %}Yes{% else %}No{% endif %}

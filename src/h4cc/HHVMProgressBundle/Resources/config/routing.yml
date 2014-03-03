@@ -5,6 +5,10 @@ h4cc_hhvm_progress_homepage:
     pattern:  /
     defaults: { _controller: h4ccHHVMProgressBundle:Page:index }
 
+h4cc_hhvm_progress_script_download:
+    pattern:  /scripts/hhvm_status.php
+    defaults: { _controller: h4ccHHVMProgressBundle:Page:scriptDownload }
+
 h4cc_hhvm_progress_about:
     pattern:  /about
     defaults:
@@ -21,12 +25,18 @@ h4cc_hhvm_progress_help:
 #--- Packages
 
 h4cc_hhvm_progress_packages_supporting:
-    pattern:  /supporting-hhvm
+    pattern:  /tested-with-hhvm
     defaults: { _controller: h4ccHHVMProgressBundle:Package:listSupporting }
 
 h4cc_hhvm_progress_packages_allowed_failure:
-    pattern:  /supporting-hhvm-as-allowed-failure
+    pattern:  /partial-tested-hhvm
     defaults: { _controller: h4ccHHVMProgressBundle:Package:listAllowedFailure }
+
+h4cc_hhvm_progress_packages_api_get:
+    pattern:  /package/{name}.json
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:apiGetPackage }
+    requirements:
+        name: .+
 
 h4cc_hhvm_progress_packages_show:
     pattern:  /package/{name}

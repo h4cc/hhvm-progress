@@ -14,9 +14,9 @@
         To provide this information, we list all available packages from packagist.org and try to fetch the .travis.yml file from github for all listed versions.
         The result of this can be as followed:
         <ul>
-            <li><span class="label label-danger"><b>Not Supported</b></span>: The package is a "language: php" travis build, but does not build against HHVM at all.</li>
-            <li><span class="label label-warning"><b>Allowed Failure</b></span>: The package lists HHVM as a build, but failures for HHVM are allowed.</li>
-            <li><span class="label label-success"><b>Supported</b></span>: The package has 'hhvm' listed under 'php' and it is <b>not</b> a allowed failure.</li>
+            <li><span class="label label-danger"><b>Not tested</b></span>: The package is a "language: php" travis build, but does not build against HHVM at all.</li>
+            <li><span class="label label-warning"><b>Partially tested</b></span>: The package lists HHVM as a build, but failures for HHVM are allowed.</li>
+            <li><span class="label label-success"><b>Tested</b></span>: The package has 'hhvm' listed under 'php' and it is <b>not</b> a allowed failure.</li>
     <li><span class="label label-default"><b>Unknown</b></span>: The package does not fit to any of the previous specifications.</li>
         </ul>
     </p>
@@ -39,6 +39,61 @@
     <p>
         This site should not be used to provide some sort of pressure on packages not supporting HHVM.
         If you want to have HHVM support in a package, talk to the maintainers or try to provide it yourself, it ain't that hard!
+    </p>
+
+    <h2>API for HHVM status</h2>
+
+    <p>
+        There is a JSON API for fetching the latest HHVM status for a package:
+        <br/>
+        <b>Request:</b>
+        <code>
+            GET http://hhvm.h4cc.de/package/sonata-project/admin-bundle.json
+        </code>
+        <br/>
+        <b>Example Response:</b>
+        <pre>
+{
+    "name": "sonata-project/admin-bundle",
+    "description": "Symfony SonataAdminBundle",
+    "versions": {
+        "dev-acl": {
+            "version": "dev-hhvm-support",
+            "reference": "b61fa86ecb7807afec68439d40c708fee8e104d6",
+            "type": "symfony-bundle",
+            "hhvm_status_string": "tested",
+            "hhvm_status": 3
+        },
+        "9999999-dev": {
+            "version": "9999999-dev",
+            "reference": "2b0648889eab75aeb0c2f1a1e264ec5bf0be56b8",
+            "type": "symfony-bundle",
+            "hhvm_status_string": "partial_tested",
+            "hhvm_status": 2
+        },
+        "2.1.9999999.9999999-dev": {
+            "version": "2.1.9999999.9999999-dev",
+            "reference": "1a1f173e0136723bad62680cb8c6c5645e4cae0a",
+            "type": "symfony-bundle",
+            "hhvm_status_string": "not_tested",
+            "hhvm_status": 1
+        },
+        "2.1.0.0": {
+            "version": "2.1.0.0",
+            "reference": "c611614f23d5d42257747ae81bcc36df86216bae",
+            "type": "symfony-bundle",
+            "hhvm_status_string": "not_tested",
+            "hhvm_status": 1
+        }
+    }
+}</pre>
+    </p>
+
+    <p>
+        There is also a simple script for processing your composer.lock file locally,
+        asking for the HHVM status using the API above:
+        <a href="{{ path('h4cc_hhvm_progress_script_download') }}">hhvm_status.php</a>
+
     </p>
 
 {% endblock %}
