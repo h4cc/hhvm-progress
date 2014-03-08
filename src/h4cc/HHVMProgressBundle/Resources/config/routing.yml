@@ -32,6 +32,12 @@ h4cc_hhvm_progress_packages_allowed_failure:
     pattern:  /partial-tested-hhvm
     defaults: { _controller: h4ccHHVMProgressBundle:Package:listAllowedFailure }
 
+h4cc_hhvm_progress_packages_api_update:
+    pattern:  /package/{name}/update.json
+    defaults: { _controller: h4ccHHVMProgressBundle:Package:apiUpdatePackage }
+    requirements:
+        name: .+
+
 h4cc_hhvm_progress_packages_api_get:
     pattern:  /package/{name}.json
     defaults: { _controller: h4ccHHVMProgressBundle:Package:apiGetPackage }

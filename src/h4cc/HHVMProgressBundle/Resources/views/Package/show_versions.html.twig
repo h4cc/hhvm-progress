@@ -1,4 +1,3 @@
-
 {% extends "base.html.twig" %}
 
 {% block page_title %}{{ name }} versions and HHVM testing - {{ parent() }}{% endblock %}
@@ -16,7 +15,8 @@
             </tr>
             <tr>
                 <td style="line-height:30px;">Markdown</td>
-                <td><input style="margin:0;" type="text" value="[![{alt}]({badgeUrl})]({siteUrl})" class="input-xlarge"></td>
+                <td><input style="margin:0;" type="text" value="[![{alt}]({badgeUrl})]({siteUrl})" class="input-xlarge">
+                </td>
             </tr>
             <tr>
                 <td style="line-height:30px;">Textile</td>
@@ -24,11 +24,15 @@
             </tr>
             <tr>
                 <td style="line-height:30px;">RDOC</td>
-                <td><input style="margin:0;" type="text" value="{<img src=&quot;{badgeUrl}&quot; alt=&quot;{alt}&quot; />}[{siteUrl}]" class="input-xlarge"></td>
+                <td><input style="margin:0;" type="text"
+                           value="{<img src=&quot;{badgeUrl}&quot; alt=&quot;{alt}&quot; />}[{siteUrl}]"
+                           class="input-xlarge"></td>
             </tr>
             <tr>
                 <td style="line-height:30px;">AsciiDoc</td>
-                <td><input style="margin:0;" type="text" value="image:{badgeUrl}[&quot;{alt}&quot;, link=&quot;{siteUrl}&quot;]" class="input-xlarge"></td>
+                <td><input style="margin:0;" type="text"
+                           value="image:{badgeUrl}[&quot;{alt}&quot;, link=&quot;{siteUrl}&quot;]" class="input-xlarge">
+                </td>
             </tr>
         </table>
     </div>
@@ -39,7 +43,7 @@
            data-badge-url="{{ url('h4cc_hhvm_progress_badges_show', {"name": name}) }}"
            data-site-url="{{ url('h4cc_hhvm_progress_packages_show', {"name": name}) }}">
             Badges <span class="glyphicon glyphicon-info-sign"></span>
-            </a>
+        </a>
     </div>
 
     <h1>Package {{ name }}</h1>
@@ -47,40 +51,44 @@
     <p>More about this package on <a href="https://packagist.org/packages/{{ name }}">Packagist</a></p>
 
     {% if versions %}
-    <table class="table table-bordered">
-        <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Version</th>
-            <th>HHVM&nbsp;Support</th>
-        </tr>
-    {% for version in versions %}
-        <tr class="
+        <table class="table table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Version</th>
+                <th>HHVM&nbsp;Support
+                    <span id="icon_refresh" class="pull-right glyphicon glyphicon-refresh"></span>
+                    <span id="icon_wait" style="display: none;" class="pull-right glyphicon glyphicon-time"></span>
+                </th>
+            </tr>
+            {% for version in versions %}
+                <tr class="
         {% if version.hhvmStatus == -2 %}active{% endif %}
         {% if version.hhvmStatus == -1 %}active{% endif %}
         {% if version.hhvmStatus == 1 %}danger{% endif %}
         {% if version.hhvmStatus == 2 %}warning{% endif %}
         {% if version.hhvmStatus == 3 %}success{% endif %}
         ">
-            <td>{{ version.name }}</td>
-            <td>{{ version.type }}</td>
-            <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
-            <td>
-                {% if version.hhvmStatus == -2 %}Unknown&nbsp;status{% endif %}
-                {% if version.hhvmStatus == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
-                {% if version.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
-                {% if version.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                        Partially&nbsp;tested
-                    </a>
-                {% endif %}
-                {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
-                        Tested
-                    </a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-    </table>
+                    <td>{{ version.name }}</td>
+                    <td>{{ version.type }}</td>
+                    <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
+                    <td>
+                        {% if version.hhvmStatus == -2 %}Unknown&nbsp;status{% endif %}
+                        {% if version.hhvmStatus == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
+                        {% if version.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
+                        {% if version.hhvmStatus == 2 %}<a
+                            href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
+                                Partially&nbsp;tested
+                            </a>
+                        {% endif %}
+                        {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
+                                Tested
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     {% else %}
         <p>No versions found :(</p>
     {% endif %}
@@ -91,8 +99,8 @@
 {% block javascripts %}
 
     <script language="javascript" type="text/javascript">
-        $(document).ready(function() {
-            $('#badge-popover').each(function() {
+        $(document).ready(function () {
+            $('#badge-popover').each(function () {
                 var badgeUrl = $(this).data('badge-url');
                 var siteUrl = $(this).data('site-url');
                 var alt = $(this).data('alt');
@@ -105,11 +113,31 @@
                     title: alt + '@dev-master - <img src="' + badgeUrl + '" alt="' + alt + '">'
                 });
 
-                $(this).click(function(e) {
+                $(this).click(function (e) {
                     e.preventDefault();
                 });
             });
-        });
+
+            $('#icon_refresh').click(function () {
+                $('#icon_refresh').toggle(0);
+                $('#icon_wait').toggle(0);
+
+                $.ajax({
+                    type: 'GET',
+                    url: '{{ url('h4cc_hhvm_progress_packages_api_update', {"name": name}) }}'
+                }).done(function() {
+                    // Reload current page
+                    $.ajax({
+                        url: "",
+                        context: document.body,
+                        success: function(s){
+                            $(this).html(s);
+                        }
+                    });
+                });
+            });
+        })
+        ;
     </script>
 
 {% endblock %}

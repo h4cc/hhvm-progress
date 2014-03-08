@@ -46,6 +46,18 @@ class PackageController extends Controller
         );
     }
 
+    public function apiUpdatePackageAction($name)
+    {
+        try {
+            $updater = $this->get('h4cc_hhvm_progress.package.updater');
+            $updater->updatePackage($name);
+
+            return new JsonResponse(array('result' => 'success'));
+        }catch(\Exception $e) {
+            return new JsonResponse(array('result' => 'failure'));
+        }
+    }
+
     public function apiGetPackageAction($name)
     {
         /** @var PackageVersion[] $versions */
