@@ -1,6 +1,8 @@
 
 {% extends "base.html.twig" %}
 
+{% block page_title %}{{ name }} versions and HHVM testing - {{ parent() }}{% endblock %}
+
 {% block body %}
 
     {{ include('h4ccHHVMProgressBundle:includes:menu_hhvm_support.html.twig') }}
