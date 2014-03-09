@@ -13,7 +13,7 @@
 
     <p>
         Here is a <a href="{{ path('h4cc_hhvm_progress_packages_needing_help') }}">list of packages</a> <b>not yet</b> testing against HHVM.
-        Pick one from this list to try the following instructions.
+        Pick one from this list and try the following instructions.
     </p>
 
     <h2>Add HHVM to a travis-ci build</h2>
@@ -30,7 +30,7 @@
             <li>
                 If the build fails and the PHP runtime is HHVM, the build will not be broken.
                 <br/>
-                If this is not intended, remove the whole "allow_failures:" part from "matrix:".
+                If the build succeeds, or you want your build marked broken, remove the "allow_failures:" part from "matrix:".
             </li>
         </ul>
     </p>
@@ -40,7 +40,7 @@
     <p>
         If there is foreign project you want to support HHVM, or simply let it test against HHVM. Try the following steps:
         <ol>
-            <li>First, check if there is not already a HHVM pull-request.</li>
+            <li>First check if there is not already a HHVM pull-request.</li>
             <li>Go to the github.com repository of the project.</li>
             <li>Open the '.travis.yml' file and click on "Edit"</li>
             <li>Add 'hhvm' to the 'php:' section.</li>
@@ -58,13 +58,13 @@
     <h2>Create a Issue for supporting HHVM</h2>
 
     <p>
-        If all of the above is to technical/spooky for you, there is a dead simple way to participate:
+        If all of the above is too technical/spooky for you, there is a dead simple way to participate:
         <ol>
             <li>Go to the Github repository you want to support HHVM.</li>
             <li>Click on "Issues", then "New Issue"</li>
             <li>Enter this title "Run tests against HHVM.".</li>
             <li>Then put this in the text box: "Please run your tests against HHVM.<br/>
-                More informations: http://hhvm.h4cc.de/help"</li>
+                More information: http://hhvm.h4cc.de/help"</li>
             <li>Click on "Submit new issue" and wait for a response of the maintainer.</li>
         </ol>
     </p>
