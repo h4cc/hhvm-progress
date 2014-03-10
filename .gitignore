@@ -1,4 +1,5 @@
 /web/bundles/
+/web/graphs/*.png
 /app/bootstrap*
 /app/cache/*
 /app/logs/*

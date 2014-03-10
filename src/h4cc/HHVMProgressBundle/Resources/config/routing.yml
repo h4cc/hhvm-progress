@@ -86,3 +86,10 @@ h4cc_hhvm_progress_badges_show:
     defaults: { _controller: h4ccHHVMProgressBundle:Badges:show }
     requirements:
         name: .+
+
+
+#--- Graphs
+
+h4cc_hhvm_progress_graphs_list:
+    pattern:  /graphs/
+    defaults: { _controller: h4ccHHVMProgressBundle:Graphs:list }

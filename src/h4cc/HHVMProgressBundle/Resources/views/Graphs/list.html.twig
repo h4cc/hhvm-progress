@@ -1,0 +1,21 @@
+
+{% extends "base.html.twig" %}
+
+{% block page_title %}HHVM Framework graphs - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h1>Graphs of HHVM support in frameworks</h1>
+
+    <p>These graphs are generated every hour by a automated composer installation.</p>
+
+    <h2>Symfony</h2>
+
+    <p><a href="/graphs/symfony_2_4.png">Graph</a> for <b>framework-standard-edition</b>.</p>
+    <p><a href="/graphs/symfony_2_4-dev.png">Graph</a> for <b>framework-standard-edition</b> with development-dependencies.</p>
+
+    <h2>Laravel</h2>
+
+    <p><a href="/graphs/laravel_4_1.png">Graph</a> for <b>laravel/framework</b>.</p>
+    <p><a href="/graphs/laravel_4_1-dev.png">Graph</a> for <b>laravel/framework</b> with development-dependencies.</p>
+
+{% endblock %}
