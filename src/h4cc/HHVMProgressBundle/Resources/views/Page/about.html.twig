@@ -9,7 +9,7 @@
     <p>
         This website tries to visualize the current state of the HHVM support in PHP libraries and frameworks.
         <br/>
-        Aim is to provide a resource to check, if used libraries support HHVM.
+        The aim is to provide a resource to check which libraries support HHVM.
     </p>
 
     <p>
@@ -29,13 +29,13 @@
     </p>
 
     <p>
-        The progress bar on the frontpage is showing a package as green, when at least <b>one</b> version/branch is supporting HHVM.
-        This is equal to orange, if the package supports HHVM at least as a allowed failure.
-        Any package that is red, does not build against HHVM at all.
+        The progress bar on the frontpage shows a package as green, when at least <b>one</b> version/branch supports HHVM.
+        It shows orange, if the package supports HHVM at least as a allowed failure.
+        Any package that is red, does not test against HHVM at all.
     </p>
 
     <p>
-        Projects, that do not have a .travis.yml file, or that are not configured as "language: php", will be ignored.
+        Projects that do not have a .travis.yml file, or that are not configured as "language: php", will be ignored.
     </p>
 
     <p>
@@ -46,7 +46,7 @@
     <h2>API for HHVM status</h2>
 
     <p>
-        There is a JSON API for fetching the latest HHVM status for a package:
+        There is a JSON API to fetch the latest HHVM status for a package:
         <br/>
         <b>Request:</b>
         <code>
@@ -92,8 +92,7 @@
     </p>
 
     <p>
-        There is also a simple script for processing your composer.lock file locally,
-        asking for the HHVM status using the API above:
+        There is also a simple script to process your composer.lock file locally using the above API:
         <a href="{{ path('h4cc_hhvm_progress_script_download') }}">hhvm_status.php</a>
 
     </p>
