@@ -4,6 +4,7 @@
 namespace h4cc\HHVMProgressBundle\Services;
 
 
+use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
 use h4cc\HHVMProgressBundle\Exception\GithubAuthErrorException;
 use h4cc\HHVMProgressBundle\Exception\GithubRateLimitException;
@@ -117,6 +118,13 @@ class PackageUpdater
             // Check if "type" is not yet set.
             if(!$packageVersion->getType()) {
                 $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing type tag");
+
+                return true;
+            }
+
+            // Fetch travisContent if there should be some.
+            if(!$packageVersion->getTravisContent() && $packageVersion->getHhvmStatus() >= PackageVersion::HHVM_STATUS_NONE) {
+                $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing travis content");
 
                 return true;
             }
