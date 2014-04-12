@@ -16,7 +16,7 @@ class UpdateCommand extends ContainerAwareCommand
         $this
           ->setName('h4cc:hhvm:update')
           ->setDescription('Updates the index')
-          ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 100)
+          ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 200)
         ;
     }
 

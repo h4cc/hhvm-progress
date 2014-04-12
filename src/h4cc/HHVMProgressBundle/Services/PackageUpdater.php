@@ -111,12 +111,15 @@ class PackageUpdater
 
     protected function needToUpdatePackageVersion($name, Version $version) {
 
-        // Check if "type" is not yet set.
         $packageVersion = $this->versions->get($name, $version->getVersionNormalized());
-        if($packageVersion && !$packageVersion->getType()) {
-            $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing type tag");
 
-            return true;
+        if($packageVersion) {
+            // Check if "type" is not yet set.
+            if(!$packageVersion->getType()) {
+                $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing type tag");
+
+                return true;
+            }
         }
 
         return ! $this->versions->exists(
