@@ -48,6 +48,18 @@ class GraphCommand extends ContainerAwareCommand
             }
         }
 
+        $silexVersions = array(
+          '1.2.*' => 'silex_1_2',
+        );
+
+        foreach ($silexVersions as $version => $name) {
+            try {
+                $this->createGraphSilex($version, $name);
+            } catch (\Exception $e) {
+                $output->writeln("Generating Silex graphs failed: " . $e->getMessage());
+            }
+        }
+
         /*
         // Damn, thats slooooow.
         $drupalVersions = array(
@@ -131,6 +143,20 @@ class GraphCommand extends ContainerAwareCommand
           '{ "require": {   "drupal/drupal": "' . $version . '"  }}'
         );
         $p('php composer.phar update --prefer-dist');
+
+        $this->createComposerGraphs(self::TMP_DIR, $name);
+    }
+
+    protected function createGraphSilex($version, $name)
+    {
+        $this->prepare();
+        $p = $this->process(self::TMP_DIR);
+
+        file_put_contents(
+          self::TMP_DIR . '/composer.json',
+          '{ "name": "root", "require": {   "silex/silex": "' . $version . '"  }}'
+        );
+        $p('php composer.phar install --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
