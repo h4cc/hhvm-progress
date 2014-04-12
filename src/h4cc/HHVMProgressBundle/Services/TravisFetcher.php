@@ -7,6 +7,7 @@ namespace h4cc\HHVMProgressBundle\Services;
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Services\TravisFetcher\Github;
 use Packagist\Api\Result\Package\Version;
+use Packagist\Api\Result\Package\Source;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -19,14 +20,23 @@ class TravisFetcher
      */
     private $logger;
 
+    /** @var  string */
+    private $content = '';
+
     public function __construct(LoggerInterface $logger, Github $github) {
         $this->github = $github;
         $this->logger = $logger;
     }
 
-    public function fetchTravisHHVMStatus(Version $version) {
-        $content = '';
+    public function getTravisFileContent()
+    {
+        return $this->content;
+    }
 
+    public function fetchTravisHHVMStatus(Version $version) {
+        $this->content = '';
+
+        /** @var Source $source */
         $source = $version->getSource();
 
         if('git' == $source->getType()) {
@@ -38,22 +48,27 @@ class TravisFetcher
                     $user = $matches[1];
                     $repo = basename($matches[2], '.git');
                     $this->logger->debug("Fetching travis file from github for $user/$repo.");
-                    $content = $this->github->fetch($user, $repo, $source->getReference());
+                    $this->content = $this->github->fetch($user, $repo, $source->getReference());
                 }
             }
         }
 
-        $this->logger->debug("Fetched .travis.yml content: '$content'");
-
-        if($content) {
-            return $this->getHHVMStatusFromTravisConfig($content);
+        // Fetcher can return 'false', what means fetching failed.
+        if(false === $this->content) {
+            throw new \RuntimeException("Fetching travis file failed.");
         }
 
-        // If there was no exception, there was simply no travis.yml file.
-        return PackageVersion::HHVM_STATUS_UNKNOWN;
+        $this->logger->debug("Fetched .travis.yml content: '$this->content'");
+
+        return $this->getHHVMStatusFromTravisConfig($this->content);
     }
 
     protected function getHHVMStatusFromTravisConfig($content) {
+        if(!$content) {
+            // If there was no exception, there was simply no travis.yml file.
+            return PackageVersion::HHVM_STATUS_UNKNOWN;
+        }
+
         try {
             $data = Yaml::parse($content);
         }catch(\Exception $e) {

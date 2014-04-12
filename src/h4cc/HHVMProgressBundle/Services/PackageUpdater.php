@@ -5,6 +5,8 @@ namespace h4cc\HHVMProgressBundle\Services;
 
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
+use h4cc\HHVMProgressBundle\Exception\GithubAuthErrorException;
+use h4cc\HHVMProgressBundle\Exception\GithubRateLimitException;
 use Packagist\Api\Result\Package\Version;
 use Packagist\Api\Result\Package;
 use Psr\Log\LoggerInterface;
@@ -44,11 +46,16 @@ class PackageUpdater
             foreach($infos->getVersions() as $version) {
                 $this->updatePackageVersion($name, $version);
             }
+        }catch(GithubRateLimitException $e) {
+            // This is a global error, can not proceed.
+            throw $e;
+        }catch(GithubAuthErrorException $e) {
+            // This is a global error, can not proceed.
+            throw $e;
         }catch(\Exception $e) {
+            // Updating this package failed.
             $this->logger->error($e->getMessage());
             $this->logger->debug($e);
-
-            throw $e;
         }
     }
 
@@ -77,21 +84,29 @@ class PackageUpdater
             $this->logger->debug("Fetched HHVM status ".(int)$hhvmStatus." for $name");
             if($hhvmStatus) {
                 // Add Version
-                $this->storePackageVersion($name, $version, $hhvmStatus);
+                $this->storePackageVersion($name, $version, $hhvmStatus, $this->fetcher->getTravisFileContent());
             }else{
-                $this->logger->info("No hhvmStatus info found for $name@$versionNumber");
+                $this->logger->info("No hhvmStatus info found for $name@".$version->getVersion());
             }
         }
     }
 
-    protected function storePackageVersion($name, Version $version, $hhvmStatus) {
+    protected function storePackageVersion($name, Version $version, $hhvmStatus, $travisContent) {
         $versionNumber = $version->getVersionNormalized();
 
         // Remove a name/version previous, because the git_reference might have changed.
         $this->versions->removeByNameAndVersion($name, $versionNumber);
 
         $this->logger->info("Adding $name@$versionNumber with hhvmStatus $hhvmStatus");
-        $this->versions->add($name, $version->getType(), $version->getDescription(), $versionNumber, $version->getSource()->getReference(), $hhvmStatus);
+        $this->versions->add(
+          $name,
+          $version->getType(),
+          $version->getDescription(),
+          $versionNumber,
+          $version->getSource()->getReference(),
+          $hhvmStatus,
+          $travisContent
+        );
     }
 
     protected function needToUpdatePackageVersion($name, Version $version) {

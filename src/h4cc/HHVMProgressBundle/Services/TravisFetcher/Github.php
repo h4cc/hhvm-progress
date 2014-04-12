@@ -5,6 +5,8 @@ namespace h4cc\HHVMProgressBundle\Services\TravisFetcher;
 
 
 use Github\Client;
+use h4cc\HHVMProgressBundle\Exception\GithubAuthErrorException;
+use h4cc\HHVMProgressBundle\Exception\GithubRateLimitException;
 use Psr\Log\LoggerInterface;
 
 class Github
@@ -30,14 +32,22 @@ class Github
         try {
             $travisConfig = $api->show($user, $repo, '.travis.yml', $branch);
         }catch(\Github\Exception\RuntimeException $e) {
+
+            // Auth error
+            if('Bad credentials' == $e->getMessage()) {
+                throw new GithubAuthErrorException("Github Auth failed", 0, $e);
+            }
+
+            // Reaching limit is a hard error.
+            if(false !== stripos($e->getMessage(), 'You have reached GitHub hour limit')) {
+                throw new GithubRateLimitException("Reached Github Limit", 0, $e);
+            }
+
             if('Not Found' != $e->getMessage()) {
                 $this->logger->error($e->getMessage());
                 $this->logger->debug($e);
             }
-            // Reaching limit is a hard error.
-            if(false !== stripos($e->getMessage(), 'You have reached GitHub hour limit')) {
-                throw new \RuntimeException("Reached Github Limit", 0, $e);
-            }
+
             return false;
         }
         // Convert content

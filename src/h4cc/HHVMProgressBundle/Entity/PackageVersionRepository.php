@@ -134,7 +134,7 @@ class PackageVersionRepository
         ));
     }
 
-    public function add($name, $type, $description, $version, $gitReference, $status) {
+    public function add($name, $type, $description, $version, $gitReference, $status, $travisContent) {
         $paketVersion = new PackageVersion();
         $paketVersion->setName($name);
         $paketVersion->setType($type ? $type : 'library');
@@ -142,6 +142,7 @@ class PackageVersionRepository
         $paketVersion->setVersion($version);
         $paketVersion->setGitReference($gitReference);
         $paketVersion->setHhvmStatus($status);
+        $paketVersion->setTravisContent($travisContent);
 
         $this->om->persist($paketVersion);
         $this->om->flush();

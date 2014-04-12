@@ -80,6 +80,12 @@ class PackageVersion
      */
     private $git_reference;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="travis_content", type="text")
+     */
+    private $travis_content;
 
     /**
      * Get id
@@ -223,5 +229,21 @@ class PackageVersion
     public function getGitReference()
     {
         return $this->git_reference;
+    }
+
+    /**
+     * @param string $travis_content
+     */
+    public function setTravisContent($travis_content)
+    {
+        $this->travis_content = $travis_content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTravisContent()
+    {
+        return $this->travis_content;
     }
 }
