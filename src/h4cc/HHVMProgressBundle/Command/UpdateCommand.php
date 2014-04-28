@@ -49,7 +49,7 @@ class UpdateCommand extends ContainerAwareCommand
         */
 
         foreach($packages as $package) {
-            $this->getContainer()->get('logger')->error("Updating package $package");
+            $this->getContainer()->get('logger')->info("Updating package $package");
             $updater->updatePackage($package);
         }
     }
