@@ -8,6 +8,7 @@ use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
 use h4cc\HHVMProgressBundle\Exception\GithubAuthErrorException;
 use h4cc\HHVMProgressBundle\Exception\GithubRateLimitException;
+use h4cc\HHVMProgressBundle\Exception\TravisFileMissingException;
 use Packagist\Api\Result\Package\Version;
 use Packagist\Api\Result\Package;
 use Psr\Log\LoggerInterface;
@@ -47,6 +48,8 @@ class PackageUpdater
             foreach($infos->getVersions() as $version) {
                 $this->updatePackageVersion($name, $version);
             }
+        }catch(TravisFileMissingException $e) {
+            // Skip this.
         }catch(GithubRateLimitException $e) {
             // This is a global error, can not proceed.
             throw $e;

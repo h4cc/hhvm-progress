@@ -5,6 +5,7 @@ namespace h4cc\HHVMProgressBundle\Services;
 
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
+use h4cc\HHVMProgressBundle\Exception\TravisFileMissingException;
 use h4cc\HHVMProgressBundle\Services\TravisFetcher\Github;
 use Packagist\Api\Result\Package\Version;
 use Packagist\Api\Result\Package\Source;
@@ -55,7 +56,8 @@ class TravisFetcher
 
         // Fetcher can return 'false', what means fetching failed.
         if(false === $this->content) {
-            throw new \RuntimeException("Fetching travis file failed.");
+            $this->logger->debug("Fetching travis file failed.");
+            throw new TravisFileMissingException();
         }
 
         $this->logger->debug("Fetched .travis.yml content: '$this->content'");
