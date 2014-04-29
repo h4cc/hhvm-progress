@@ -74,7 +74,7 @@ class TravisFetcher
         try {
             $data = Yaml::parse($content);
         }catch(\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->debug($e->getMessage());
             $this->logger->debug($e);
 
             // We cant know, so this will be "none"
