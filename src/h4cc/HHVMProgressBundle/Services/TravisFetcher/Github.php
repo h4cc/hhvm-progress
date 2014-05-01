@@ -43,7 +43,7 @@ class Github
                 throw new GithubRateLimitException("Reached Github Limit", 0, $e);
             }
 
-            if('Not Found' != $e->getMessage() || 0 !== stripos($e->getMessage(), 'No commit found')) {
+            if('Not Found' != $e->getMessage() && 0 !== stripos($e->getMessage(), 'No commit found')) {
                 $this->logger->error($e->getMessage());
                 $this->logger->debug($e);
             }
