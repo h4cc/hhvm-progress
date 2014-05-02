@@ -12,6 +12,7 @@ use h4cc\HHVMProgressBundle\Exception\TravisFileMissingException;
 use Packagist\Api\Result\Package\Version;
 use Packagist\Api\Result\Package;
 use Psr\Log\LoggerInterface;
+use Guzzle\Http\Exception\ClientErrorResponseException as GuzzleClientErrorResponseException;
 
 class PackageUpdater
 {
@@ -48,8 +49,12 @@ class PackageUpdater
             foreach($infos->getVersions() as $version) {
                 $this->updatePackageVersion($name, $version);
             }
+        }catch(GuzzleClientErrorResponseException $e) {
+            // Skip bad connection to packagist.
+            $this->logger->debug($e);
         }catch(TravisFileMissingException $e) {
             // Skip this.
+            $this->logger->debug($e);
         }catch(GithubRateLimitException $e) {
             // This is a global error, can not proceed.
             throw $e;
