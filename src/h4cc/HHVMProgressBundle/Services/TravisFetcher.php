@@ -24,6 +24,8 @@ class TravisFetcher
     /** @var  string */
     private $content = '';
 
+    private $hhvmStrings = array('hhvm', 'hhvm-nightly');
+
     public function __construct(LoggerInterface $logger, Github $github) {
         $this->github = $github;
         $this->logger = $logger;
@@ -91,9 +93,14 @@ class TravisFetcher
         // Check php versions.
         if(isset($data['php'])) {
             if(is_array($data['php'])) {
-                $supports = in_array('hhvm', $data['php']);
+                $supports = false;
+                foreach($data['php'] as $phpVersion) {
+                    if($this->isHHVMString($phpVersion)) {
+                        $supports = true;
+                    }
+                }
             }else{
-                $supports = ('hhvm' == $data['php']);
+                $supports = $this->isHHVMString($data['php']);
             }
         }else{
             return PackageVersion::HHVM_STATUS_NO_PHP;
@@ -104,7 +111,7 @@ class TravisFetcher
             $af = $data['matrix']['allow_failures'];
             foreach($af as $keyValue) {
                 if(is_array($keyValue) && isset($keyValue['php'])) {
-                    if('hhvm' == $keyValue['php']) {
+                    if($this->isHHVMString($keyValue['php'])) {
                         return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
                     }
                 }
@@ -112,5 +119,9 @@ class TravisFetcher
         }
 
         return ($supports) ? PackageVersion::HHVM_STATUS_SUPPORTED : PackageVersion::HHVM_STATUS_NONE;
+    }
+
+    private function isHHVMString($string) {
+        return in_array(strtolower($string), $this->hhvmStrings);
     }
 }
