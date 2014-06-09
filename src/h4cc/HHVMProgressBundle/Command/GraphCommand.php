@@ -25,7 +25,9 @@ class GraphCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $sfVersions = array(
+          '2.3.*' => 'symfony_2_3',
           '2.4.*' => 'symfony_2_4',
+          '2.5.*' => 'symfony_2_5',
         );
 
         foreach ($sfVersions as $version => $name) {
@@ -37,7 +39,9 @@ class GraphCommand extends ContainerAwareCommand
         }
 
         $laravelVersions = array(
+          '4.0.*' => 'laravel_4_0',
           '4.1.*' => 'laravel_4_1',
+          '4.2.*' => 'laravel_4_2',
         );
 
         foreach ($laravelVersions as $version => $name) {
@@ -49,6 +53,8 @@ class GraphCommand extends ContainerAwareCommand
         }
 
         $silexVersions = array(
+          '1.0.*' => 'silex_1_0',
+          '1.1.*' => 'silex_1_1',
           '1.2.*' => 'silex_1_2',
         );
 

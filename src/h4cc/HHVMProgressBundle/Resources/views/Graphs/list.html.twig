@@ -6,21 +6,81 @@
 {% block body %}
     <h1>Graphs of HHVM support in frameworks</h1>
 
-    <p>These graphs are generated every hour by a automated composer installation.</p>
+    <p>These graphs are generated every six hour by a automated composer installation.</p>
 
     <h2>Symfony</h2>
 
-    <p><a href="/graphs/symfony_2_4.png">Graph</a> for <b>framework-standard-edition</b>.</p>
-    <p><a href="/graphs/symfony_2_4-dev.png">Graph</a> for <b>framework-standard-edition</b> with development-dependencies.</p>
+    <table class="table">
+        <tr>
+            <th style="width: 60%">Package</th>
+            <th style="width: 20%">Version</th>
+            <th style="width: 20%">Graphs</th>
+        </tr>
+        <tr>
+            <td>symfony/framework-standard-edition</td>
+            <td>2.3.*</td>
+            <td><a href="/graphs/symfony_2_3.png">Normal</a>, <a href="/graphs/symfony_2_3-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>symfony/framework-standard-edition</td>
+            <td>2.4.*</td>
+            <td><a href="/graphs/symfony_2_4.png">Normal</a>, <a href="/graphs/symfony_2_4-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>symfony/framework-standard-edition</td>
+            <td>2.5.*</td>
+            <td><a href="/graphs/symfony_2_5.png">Normal</a>, <a href="/graphs/symfony_2_5-dev.png">Dev</a></td>
+        </tr>
+    </table>
 
     <h2>Laravel</h2>
 
-    <p><a href="/graphs/laravel_4_1.png">Graph</a> for <b>laravel/framework</b>.</p>
-    <p><a href="/graphs/laravel_4_1-dev.png">Graph</a> for <b>laravel/framework</b> with development-dependencies.</p>
+    <table class="table">
+        <tr>
+            <th style="width: 60%">Package</th>
+            <th style="width: 20%">Version</th>
+            <th style="width: 20%">Graphs</th>
+        </tr>
+        <tr>
+            <td>laravel/framework</td>
+            <td>4.0.*</td>
+            <td><a href="/graphs/laravel_4_0.png">Normal</a>, <a href="/graphs/laravel_4_0-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>laravel/framework</td>
+            <td>4.1.*</td>
+            <td><a href="/graphs/laravel_4_1.png">Normal</a>, <a href="/graphs/laravel_4_1-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>laravel/framework</td>
+            <td>4.2.*</td>
+            <td><a href="/graphs/laravel_4_2.png">Normal</a>, <a href="/graphs/laravel_4_2-dev.png">Dev</a></td>
+        </tr>
+    </table>
 
     <h2>Silex</h2>
 
-    <p><a href="/graphs/silex_1_2.png">Graph</a> for <b>silex/silex</b>.</p>
-    <p><a href="/graphs/silex_1_2-dev.png">Graph</a> for <b>silex/silex</b> with development-dependencies.</p>
+    <table class="table">
+        <tr>
+            <th style="width: 60%">Package</th>
+            <th style="width: 20%">Version</th>
+            <th style="width: 20%">Graphs</th>
+        </tr>
+        <tr>
+            <td>silex/silex</td>
+            <td>1.0.*</td>
+            <td><a href="/graphs/silex_1_0.png">Normal</a>, <a href="/graphs/silex_1_0-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>silex/silex</td>
+            <td>1.1.*</td>
+            <td><a href="/graphs/silex_1_1.png">Normal</a>, <a href="/graphs/silex_1_1-dev.png">Dev</a></td>
+        </tr>
+        <tr>
+            <td>silex/silex</td>
+            <td>1.2.*</td>
+            <td><a href="/graphs/silex_1_2.png">Normal</a>, <a href="/graphs/silex_1_2-dev.png">Dev</a></td>
+        </tr>
+    </table>
 
 {% endblock %}
