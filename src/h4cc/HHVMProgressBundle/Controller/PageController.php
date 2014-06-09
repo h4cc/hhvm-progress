@@ -9,7 +9,7 @@ class PageController extends Controller
 {
     public function indexAction()
     {
-        $stats = $this->get('h4cc_hhvm_progress.package.stats')->getStatsByHHVMState();
+        $stats = $this->getCachedStats();
 
         if(0 == $stats['total']) {
             // Avoid division by zero errors.
@@ -34,5 +34,19 @@ class PageController extends Controller
         $response->headers->set('Content-Disposition', 'attachment; filename="hhvm_status.php"');
 
         return $response;
+    }
+
+    private function getCachedStats() {
+        $cache = $this->get('memcache.default');
+
+        $stats = $cache->get('stats');
+
+        if(!$stats) {
+            $stats = $this->get('h4cc_hhvm_progress.package.stats')->getStatsByHHVMState();
+
+            $cache->set('stats', $stats, 60);
+        }
+
+        return $stats;
     }
 }

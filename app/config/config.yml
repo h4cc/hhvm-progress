@@ -50,3 +50,13 @@ doctrine:
 knp_paginator:
     template:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
+
+lsw_memcache:
+    session:
+        client: default
+    clients:
+        default:
+            hosts:
+              - { dsn: localhost, port: 11211 }
+            options:
+                prefix_key: "hhvm_"

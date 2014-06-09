@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "12a8903b2e5c5876604224e7aaed6c6d",
+    "hash": "a74070d1bf805871186ac69eadb8a4a8",
     "packages": [
         {
             "name": "clue/graph",
@@ -1199,6 +1200,57 @@
                 "packagist"
             ],
             "time": "2013-11-22 09:55:31"
+        },
+        {
+            "name": "leaseweb/memcache-bundle",
+            "version": "v1.2.13",
+            "target-dir": "Lsw/MemcacheBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LeaseWeb/LswMemcacheBundle.git",
+                "reference": "59711567c188776d88d8d01213d95411487e3c04"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LeaseWeb/LswMemcacheBundle/zipball/59711567c188776d88d8d01213d95411487e3c04",
+                "reference": "59711567c188776d88d8d01213d95411487e3c04",
+                "shasum": ""
+            },
+            "require": {
+                "ext-memcached": ">=1.0",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": ">=2.1"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Lsw\\MemcacheBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maurits van der Schee",
+                    "email": "m.vanderschee@leaseweb.com"
+                }
+            ],
+            "description": "Memcache Doctrine caching and session storage in the Web Debug Toolbar",
+            "homepage": "http://www.leaseweblabs.com",
+            "keywords": [
+                "cache",
+                "memcache",
+                "memcached",
+                "session"
+            ],
+            "time": "2014-05-30 14:29:06"
         },
         {
             "name": "monolog/monolog",

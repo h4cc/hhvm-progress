@@ -33,7 +33,9 @@
 
         "jms/composer-deps-analyzer": "dev-patch-1",
         "clue/graph": "~0.7",
-        "knplabs/knp-paginator-bundle": "~2.4"
+        "knplabs/knp-paginator-bundle": "~2.4",
+
+        "leaseweb/memcache-bundle": "~1.2"
     },
     "scripts": {
         "post-install-cmd": [
