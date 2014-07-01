@@ -111,8 +111,16 @@ class TravisFetcher
             $af = $data['matrix']['allow_failures'];
             foreach($af as $keyValue) {
                 if(is_array($keyValue) && isset($keyValue['php'])) {
-                    if($this->isHHVMString($keyValue['php'])) {
-                        return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
+                    if(is_array($keyValue['php'])) {
+                        foreach($keyValue['php'] as $phpString) {
+                            if($this->isHHVMString($phpString)) {
+                                return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
+                            }
+                        }
+                    }else{
+                        if($this->isHHVMString($keyValue['php'])) {
+                            return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
+                        }
                     }
                 }
             }
