@@ -20,6 +20,7 @@
 
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
+        "luxifer/doctrine-functions": "~1.2",
 
         "twig/extensions": "~1.0",
 
@@ -35,7 +36,9 @@
         "clue/graph": "~0.7",
         "knplabs/knp-paginator-bundle": "~2.4",
 
-        "leaseweb/memcache-bundle": "~1.2"
+        "leaseweb/memcache-bundle": "~1.2",
+
+        "ob/highcharts-bundle": "~1.1"
     },
     "scripts": {
         "post-install-cmd": [

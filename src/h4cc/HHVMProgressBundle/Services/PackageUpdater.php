@@ -111,6 +111,7 @@ class PackageUpdater
           $name,
           $version->getType(),
           $version->getDescription(),
+          $version->getTime(),
           $versionNumber,
           $version->getSource()->getReference(),
           $hhvmStatus,
@@ -123,6 +124,14 @@ class PackageUpdater
         $packageVersion = $this->versions->get($name, $version->getVersionNormalized());
 
         if($packageVersion) {
+            // Check if "time" is not yet set.
+            // This check is needed, because a empty "time" will become 0000-00-00 00:00:00.
+            if($packageVersion->getTime()->format('Y') < 2000) {
+                $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing time");
+
+                return true;
+            }
+
             // Check if "type" is not yet set.
             if(!$packageVersion->getType()) {
                 $this->logger->info("Need to update $name @ ".$version->getVersionNormalized().", because of missing type tag");

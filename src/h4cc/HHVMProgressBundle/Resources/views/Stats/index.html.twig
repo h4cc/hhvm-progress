@@ -1,0 +1,23 @@
+
+{% extends "base.html.twig" %}
+
+{%  block javascripts %}
+    <script src="//code.highcharts.com/4.0.1/highcharts.js"></script>
+    <script src="//code.highcharts.com/4.0.1/modules/exporting.js"></script>
+{% endblock %}
+
+
+{% block body %}
+    <div class="jumbotron">
+        <h1>Statistics</h1>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                {{ chart(chart) }}
+            });
+        </script>
+
+        <div id="statistics_chart" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+    </div>
+{% endblock %}

@@ -134,11 +134,12 @@ class PackageVersionRepository
         ));
     }
 
-    public function add($name, $type, $description, $version, $gitReference, $status, $travisContent) {
+    public function add($name, $type, $description, $time, $version, $gitReference, $status, $travisContent) {
         $paketVersion = new PackageVersion();
         $paketVersion->setName($name);
         $paketVersion->setType($type ? $type : 'library');
         $paketVersion->setDescription($description);
+        $paketVersion->setTime(new \DateTime($time));
         $paketVersion->setVersion($version);
         $paketVersion->setGitReference($gitReference);
         $paketVersion->setHhvmStatus($status);

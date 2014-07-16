@@ -88,6 +88,13 @@ class PackageVersion
     private $travis_content;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="time", type="datetime")
+     */
+    private $time;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -245,5 +252,21 @@ class PackageVersion
     public function getTravisContent()
     {
         return $this->travis_content;
+    }
+
+    /**
+     * @param \DateTime $time
+     */
+    public function setTime(\DateTime $time)
+    {
+        $this->time = $time;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTime()
+    {
+        return $this->time;
     }
 }

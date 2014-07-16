@@ -44,7 +44,7 @@ services:
     h4cc_hhvm_progress.repos.package_version:
         class: h4cc\HHVMProgressBundle\Entity\PackageVersionRepository
         arguments:
-          - @h4cc_hhvm_progress.doctrine_repo.text_blocks
+          - @h4cc_hhvm_progress.doctrine_repo.package_version
           - @h4cc_hhvm_progress.orm.entity_manager
 
 
@@ -57,8 +57,8 @@ services:
 
 
     # Internal Doctrine Repo.
-    h4cc_hhvm_progress.doctrine_repo.text_blocks:
-        public: false
+    h4cc_hhvm_progress.doctrine_repo.package_version:
+        #public: false
         class: Doctrine\ORM\EntityRepository
         factory_service: h4cc_hhvm_progress.orm.entity_manager
         factory_method: getRepository

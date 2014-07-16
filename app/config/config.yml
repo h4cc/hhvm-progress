@@ -45,7 +45,16 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        auto_mapping: true
+        entity_managers:
+            default:
+                auto_mapping: true
+                dql:
+                    # Needing some special MySQL compatible functions.
+                    datetime_functions:
+                        date:         Luxifer\DQL\Datetime\Date
+                        date_format:  Luxifer\DQL\Datetime\DateFormat
+                        month:        Luxifer\DQL\Datetime\Month
+                        year:         Luxifer\DQL\Datetime\Year
 
 knp_paginator:
     template:

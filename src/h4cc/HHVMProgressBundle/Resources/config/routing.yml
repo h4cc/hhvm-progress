@@ -93,3 +93,12 @@ h4cc_hhvm_progress_badges_show:
 h4cc_hhvm_progress_graphs_list:
     pattern:  /graphs/
     defaults: { _controller: h4ccHHVMProgressBundle:Graphs:list }
+
+
+#--- Statistics
+
+# Internal URL for testing purposes :)
+h4cc_hhvm_progress_statistics_index:
+    pattern:  /_stats/
+    defaults: { _controller: h4ccHHVMProgressBundle:Stats:index }
+
