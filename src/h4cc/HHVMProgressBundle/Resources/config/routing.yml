@@ -97,8 +97,7 @@ h4cc_hhvm_progress_graphs_list:
 
 #--- Statistics
 
-# Internal URL for testing purposes :)
 h4cc_hhvm_progress_statistics_index:
-    pattern:  /_stats/
+    pattern:  /statistics/
     defaults: { _controller: h4ccHHVMProgressBundle:Stats:index }
 
