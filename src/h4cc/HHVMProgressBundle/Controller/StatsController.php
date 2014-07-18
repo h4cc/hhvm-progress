@@ -85,6 +85,9 @@ class StatsController extends Controller
 
         $chart->xAxis->categories($yearsAndMonths);
         $chart->series($series);
+        
+        // Modify the tooltip
+        $chart->tooltip->shared(true);
 
         // Dont forget the credits :)
         $chart->credits->text('by @h4cc');
