@@ -81,11 +81,18 @@ h4cc_hhvm_progress_search:
 
 #--- Badges
 
+h4cc_hhvm_progress_badges_json:
+    pattern:  /badge/{name}.json
+    defaults: { _controller: h4ccHHVMProgressBundle:Badges:json }
+    requirements:
+        name: .+
+
 h4cc_hhvm_progress_badges_show:
-    pattern:  /badge/{name}.png
+    pattern:  /badge/{name}.{type}
     defaults: { _controller: h4ccHHVMProgressBundle:Badges:show }
     requirements:
         name: .+
+        type: png|svg
 
 
 #--- Graphs
