@@ -8,5 +8,7 @@ parameters:
 
     github_token:      ~
 
+    php_binary:        php
+
     locale:            en
     secret:            retChannIsNotSoSecThisTokeThisTokenIsNotSoSecnIsNotSoSecgeItThisToke

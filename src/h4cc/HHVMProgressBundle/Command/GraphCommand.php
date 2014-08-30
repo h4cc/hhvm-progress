@@ -22,6 +22,11 @@ class GraphCommand extends ContainerAwareCommand
           ->setDescription('Updates the graphs of major frameworks.');
     }
 
+    protected function getPHPBinary()
+    {
+        return $this->getContainer()->getParameter('php_binary');
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $sfVersions = array(
@@ -120,7 +125,7 @@ class GraphCommand extends ContainerAwareCommand
           self::TMP_DIR . '/composer.json',
           '{ "name": "fuelphp/fuelphp", "require": {   "fuelphp/foundation": "' . $version . '"  }, "minimum-stability": "dev"}'
         );
-        $p('php composer.phar update --prefer-dist');
+        $p($this->getPHPBinary().' composer.phar update --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
@@ -134,7 +139,7 @@ class GraphCommand extends ContainerAwareCommand
           self::TMP_DIR . '/composer.json',
           '{ "require": {   "ppi/framework": "' . $version . '"  }}'
         );
-        $p('php composer.phar update --prefer-dist');
+        $p($this->getPHPBinary().' composer.phar update --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
@@ -148,7 +153,7 @@ class GraphCommand extends ContainerAwareCommand
           self::TMP_DIR . '/composer.json',
           '{ "require": {   "drupal/drupal": "' . $version . '"  }}'
         );
-        $p('php composer.phar update --prefer-dist');
+        $p($this->getPHPBinary().' composer.phar update --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
@@ -162,7 +167,7 @@ class GraphCommand extends ContainerAwareCommand
           self::TMP_DIR . '/composer.json',
           '{ "name": "root", "require": {   "silex/silex": "' . $version . '"  }}'
         );
-        $p('php composer.phar install --prefer-dist');
+        $p($this->getPHPBinary().' composer.phar install --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
@@ -176,7 +181,7 @@ class GraphCommand extends ContainerAwareCommand
           self::TMP_DIR . '/composer.json',
           '{ "name": "laravel/laravel", "require": {   "laravel/framework": "' . $version . '"  }}'
         );
-        $p('php composer.phar install --prefer-dist');
+        $p($this->getPHPBinary().' composer.phar install --prefer-dist');
 
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
@@ -187,7 +192,7 @@ class GraphCommand extends ContainerAwareCommand
 
         $p = $this->process(self::TMP_DIR);
         $p(
-          'php composer.phar create-project --prefer-dist symfony/framework-standard-edition target "' . $version . '"'
+            $this->getPHPBinary().' composer.phar create-project --prefer-dist symfony/framework-standard-edition target "' . $version . '"'
         );
         $this->createComposerGraphs(self::TMP_DIR . '/target', $name);
     }
