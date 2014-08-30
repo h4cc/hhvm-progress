@@ -68,3 +68,10 @@ services:
     # Internal Alias for the entity manager we are using.
     h4cc_hhvm_progress.orm.entity_manager:
         alias: "doctrine.orm.entity_manager"
+
+#--- Twig
+
+    h4cc_hhvm_progress.twig.hhvm_extension:
+        class: h4cc\HHVMProgressBundle\Twig\HhvmExtension
+        tags:
+            - { name: twig.extension }
