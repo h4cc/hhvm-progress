@@ -10,10 +10,12 @@ class HhvmExtension extends \Twig_Extension
         return 'hhvm_progress_bundle';
     }
 
-    public function getGlobals()
+    public function getFunctions()
     {
         return array(
-            'php_version' => phpversion(),
+            new \Twig_SimpleFunction('get_php_version', function () {
+                return phpversion();
+            }),
         );
     }
 }
