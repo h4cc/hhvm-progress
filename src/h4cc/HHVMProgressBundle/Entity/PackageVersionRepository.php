@@ -4,7 +4,6 @@ namespace h4cc\HHVMProgressBundle\Entity;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\DBAL\Types\Type;
 
 
 class PackageVersionRepository
@@ -152,5 +151,41 @@ class PackageVersionRepository
     public function remove(PackageVersion $version) {
         $this->om->remove($version);
         $this->om->flush();
+    }
+
+    public function getAllPackageNames()
+    {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('v');
+
+        $query->select('v.name');
+        $query->groupBy('v.name');
+
+        $result = array();
+        foreach($query->getQuery()->getResult() as $row) {
+            $result[] = $row['name'];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $date string like '2014-09-01'
+     * @return PackageVersion[]
+     */
+    public function getMaxHHVMStatusOnDay($date)
+    {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('v');
+
+        $query->select('v');
+        $query->where('DATE(v.time) = ?1');
+        $query->groupBy('v.name');
+        $query->having('v.hhvm_status >= MAX(v.hhvm_status)');
+
+        $query->setParameter(1, $date);
+
+        return $query->getQuery()->getResult();
+
     }
 }

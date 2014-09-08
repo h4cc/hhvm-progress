@@ -95,6 +95,22 @@ class PackageVersion
     private $time;
 
     /**
+     * Returns a list of all possible hhvm status.
+     *
+     * @return array
+     */
+    public static function getAllHHVMStatus()
+    {
+        return array(
+            self::HHVM_STATUS_NONE,
+            self::HHVM_STATUS_ALLOWED_FAILURE,
+            self::HHVM_STATUS_NO_PHP,
+            self::HHVM_STATUS_SUPPORTED,
+            self::HHVM_STATUS_UNKNOWN,
+        );
+    }
+
+    /**
      * Get id
      *
      * @return integer 

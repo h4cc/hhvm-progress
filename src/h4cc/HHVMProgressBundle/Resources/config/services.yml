@@ -23,6 +23,7 @@ services:
         class: h4cc\HHVMProgressBundle\Services\PackageStats
         arguments:
           - @h4cc_hhvm_progress.repos.package_version
+          - @h4cc_hhvm_progress.repos.package_stats
 
 
 #--- Travis Fetcher
@@ -47,6 +48,11 @@ services:
           - @h4cc_hhvm_progress.doctrine_repo.package_version
           - @h4cc_hhvm_progress.orm.entity_manager
 
+    h4cc_hhvm_progress.repos.package_stats:
+        class: h4cc\HHVMProgressBundle\Entity\PackageStatsRepository
+        arguments:
+          - @h4cc_hhvm_progress.doctrine_repo.package_stats
+          - @h4cc_hhvm_progress.orm.entity_manager
 
 #--- Internals
 
@@ -64,6 +70,14 @@ services:
         factory_method: getRepository
         arguments:
           - h4cc\HHVMProgressBundle\Entity\PackageVersion
+
+    h4cc_hhvm_progress.doctrine_repo.package_stats:
+        #public: false
+        class: Doctrine\ORM\EntityRepository
+        factory_service: h4cc_hhvm_progress.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - h4cc\HHVMProgressBundle\Entity\PackageStats
 
     # Internal Alias for the entity manager we are using.
     h4cc_hhvm_progress.orm.entity_manager:

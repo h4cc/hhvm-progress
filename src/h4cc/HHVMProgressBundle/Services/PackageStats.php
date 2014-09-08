@@ -4,6 +4,7 @@
 namespace h4cc\HHVMProgressBundle\Services;
 
 
+use h4cc\HHVMProgressBundle\Entity\PackageStatsRepository;
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
 
@@ -14,8 +15,14 @@ class PackageStats
      */
     private $packages;
 
-    public function __construct(PackageVersionRepository $packages) {
+    /**
+     * @var \h4cc\HHVMProgressBundle\Entity\PackageStatsRepository
+     */
+    private $stats;
+
+    public function __construct(PackageVersionRepository $packages, PackageStatsRepository $stats) {
         $this->packages = $packages;
+        $this->stats = $stats;
     }
 
     public function getStatsByHHVMState() {
@@ -50,6 +57,48 @@ class PackageStats
         }
 
         return $stats;
+    }
+
+    public function fetchStatsFromDate(\DateTime $startDate)
+    {
+
+        // We start with a map of packages => lowest hhvm status.
+        $packages = array_fill_keys($this->packages->getAllPackageNames(), PackageVersion::HHVM_STATUS_UNKNOWN);
+
+        // Then we ask for each day from $startDate till now, whick packackges changed to which max(hhvm_status) on that day.
+
+        $days = $this->listDaysSince($startDate);
+        foreach($days as $date) {
+            $packagesStatus = $this->packages->getMaxHHVMStatusOnDay($date);
+
+            foreach($packagesStatus as $packageStatus) {
+
+                // One Package with its max hhvm_status from one day.
+                $packages[$packageStatus->getName()] = $packageStatus->getHhvmStatus();
+            }
+
+            // Filter $packages map for numbers
+            $stats = array_count_values($packages);
+
+            // Store these numbers.
+            $this->stats->saveStats(new \DateTime($date), $stats);
+        }
+    }
+
+    private function listDaysSince(\DateTime $start)
+    {
+        $date = clone $start;
+        $now = new \DateTime("today");
+
+        $dates = array();
+
+        while ($date < $now) {
+            $dates[] = $date->format('Y-m-d');
+            $date->add(new \DateInterval('P1D'));
+        }
+        $dates[] = $date->format('Y-m-d');
+
+        return $dates;
     }
 
 }
