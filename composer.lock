@@ -1356,23 +1356,26 @@
         },
         {
             "name": "leaseweb/memcache-bundle",
-            "version": "v1.2.13",
+            "version": "v1.2.15",
             "target-dir": "Lsw/MemcacheBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LeaseWeb/LswMemcacheBundle.git",
-                "reference": "59711567c188776d88d8d01213d95411487e3c04"
+                "reference": "147e968232dc5d02bb77198686e2d7b39bdeeea1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LeaseWeb/LswMemcacheBundle/zipball/59711567c188776d88d8d01213d95411487e3c04",
-                "reference": "59711567c188776d88d8d01213d95411487e3c04",
+                "url": "https://api.github.com/repos/LeaseWeb/LswMemcacheBundle/zipball/147e968232dc5d02bb77198686e2d7b39bdeeea1",
+                "reference": "147e968232dc5d02bb77198686e2d7b39bdeeea1",
                 "shasum": ""
             },
             "require": {
                 "ext-memcached": ">=1.0",
                 "php": ">=5.3.2",
                 "symfony/framework-bundle": ">=2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -1403,7 +1406,7 @@
                 "memcached",
                 "session"
             ],
-            "time": "2014-05-30 14:29:06"
+            "time": "2014-09-09 14:59:09"
         },
         {
             "name": "luxifer/doctrine-functions",
@@ -2187,8 +2190,12 @@
             "time": "2014-03-14 16:22:22"
         }
     ],
-    "packages-dev": [],
-    "aliases": [],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "doctrine/orm": 20,
@@ -2201,5 +2208,7 @@
     "platform": {
         "php": ">=5.3.3"
     },
-    "platform-dev": []
+    "platform-dev": [
+
+    ]
 }
