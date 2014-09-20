@@ -61,18 +61,15 @@ class PackageStats
 
     public function fetchStatsFromDate(\DateTime $startDate)
     {
-
         // We start with a map of packages => lowest hhvm status.
         $packages = array_fill_keys($this->packages->getAllPackageNames(), PackageVersion::HHVM_STATUS_UNKNOWN);
 
-        // Then we ask for each day from $startDate till now, whick packackges changed to which max(hhvm_status) on that day.
-
+        // Then we ask for each day from $startDate till now, which packages changed to which max(hhvm_status) on that day.
         $days = $this->listDaysSince($startDate);
         foreach($days as $date) {
             $packagesStatus = $this->packages->getMaxHHVMStatusOnDay($date);
 
             foreach($packagesStatus as $packageStatus) {
-
                 // One Package with its max hhvm_status from one day.
                 $packages[$packageStatus->getName()] = $packageStatus->getHhvmStatus();
             }

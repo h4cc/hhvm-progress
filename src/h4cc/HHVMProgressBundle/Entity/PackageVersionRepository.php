@@ -178,8 +178,11 @@ class PackageVersionRepository
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('v');
 
+        // We want to return a list of PackageVersions,
+        // with the package version with the max hhvm status for that day.
         $query->select('v');
         $query->where('DATE(v.time) = ?1');
+
         $query->groupBy('v.name');
         $query->having('v.hhvm_status >= MAX(v.hhvm_status)');
 

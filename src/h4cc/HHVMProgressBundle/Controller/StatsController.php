@@ -2,12 +2,85 @@
 
 namespace h4cc\HHVMProgressBundle\Controller;
 
+use h4cc\HHVMProgressBundle\Entity\PackageStats;
+use h4cc\HHVMProgressBundle\Entity\PackageStatsRepository;
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use Ob\HighchartsBundle\Highcharts\Highchart;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class StatsController extends Controller
 {
+    public function accumulatedAction()
+    {
+        /** @var PackageStatsRepository $repo */
+        $repo = $this->get('h4cc_hhvm_progress.repos.package_stats');
+
+        /** @var PackageStats[] $stats */
+        $stats = $repo->fetchAll();
+
+        $data = array(); //array_fill_keys(PackageVersion::getAllHHVMStatus(), array());
+        $dates = array();
+        foreach($stats as $stat) {
+            $date = $stat->getDate()->format('Y-m');
+            $dates[] = $date;
+
+            foreach($stat->getStats() as $hhvmStatus => $count) {
+                $hhvmStatus = (int)$hhvmStatus;
+                if(!isset($data[$hhvmStatus][$date])) {
+                    $data[$hhvmStatus][$date] = 0;
+                }
+                $data[$hhvmStatus][$date] += $count;
+            }
+        }
+
+        $dates = array_values(array_unique($dates));
+        //print_r($dates); print_r($data); die();
+
+        //var_dump($data[PackageVersion::HHVM_STATUS_SUPPORTED], $this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_SUPPORTED])); die();
+
+        $series = array(
+            array(
+                "name" => "Tested",
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_SUPPORTED]), //$this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_SUPPORTED]),
+                'color' => '#5CB85C',
+            ),
+            array(
+                "name" => "Partially tested",
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_ALLOWED_FAILURE]), //$this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_ALLOWED_FAILURE]),
+                'color' => '#F0AD4E',
+            ),
+            array(
+                "name" => "Not tested",
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_NONE]), //$this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_NONE]),
+                'color' => '#D9534F',
+            ),
+        );
+
+        $chart = new Highchart();
+
+        $chart->chart->renderTo('statistics_chart'); // The #id of the div where to render the chart
+        $chart->title->text('HHVM Support');
+        $chart->chart->type('area');
+
+        $chart->xAxis->labels(array('rotation' => -60));
+        $chart->yAxis->title(array('text' => "Number of tested Releases"));
+        $chart->plotOptions->area(array('stacking' => 'normal'));
+
+        $chart->xAxis->categories($dates);
+        $chart->series($series);
+
+        print_r($series); print_r($dates); die();
+
+        // Modify the tooltip
+        $chart->tooltip->shared(true);
+
+        // Dont forget the credits :)
+        $chart->credits->text('by @h4cc');
+        $chart->credits->href('http://hhvm.h4cc.de/');
+
+        return $this->render('h4ccHHVMProgressBundle:Stats:index.html.twig', array('chart' => $chart));
+    }
+
     public function indexAction()
     {
         // Fetching data by hand.
@@ -83,8 +156,12 @@ class StatsController extends Controller
         $chart->yAxis->title(array('text' => "Number of tested Releases"));
         $chart->plotOptions->area(array('stacking' => 'normal'));
 
+
+
         $chart->xAxis->categories($yearsAndMonths);
         $chart->series($series);
+
+        print_r($series); print_r($yearsAndMonths); die();
         
         // Modify the tooltip
         $chart->tooltip->shared(true);

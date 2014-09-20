@@ -22,6 +22,7 @@ class PackageStatsCommand extends ContainerAwareCommand
     {
         $this->getContainer()
             ->get('h4cc_hhvm_progress.package.stats')
+            // Date since when packages on packagist have ben published.
             ->fetchStatsFromDate(new \DateTime('2011-10-15'));
     }
 }

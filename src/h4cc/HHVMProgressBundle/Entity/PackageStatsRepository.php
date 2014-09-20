@@ -23,6 +23,14 @@ class PackageStatsRepository
         $this->om = $om;
     }
 
+    public function fetchAll()
+    {
+        return $this->repo->findBy(
+            array(),
+            array('date' => 'ASC')
+        );
+    }
+
     public function saveStats(\DateTime $date, array $stats)
     {
         $entity = $this->repo->findOneBy(array('date' => $date));
