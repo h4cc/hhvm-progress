@@ -12,11 +12,31 @@
 
         <script type="text/javascript">
             $(document).ready(function() {
-                {{ chart(chart) }}
+                {{ chart(chart_packages) }}
+                {{ chart(pie_chart_packages) }}
+                {{ chart(chart_releases) }}
+                {{ chart(pie_chart_releases) }}
             });
         </script>
 
-        <div id="statistics_chart" style="width: 100%; height: 500px; margin: 0 auto"></div>
+        <h2>Number of Packages</h2>
+        <p>This is the accumulated number of packages per month.<br/>A package is for example 'symfony/symfony'</p>
+        <div id="statistics_chart_packages" style="width: 100%; height: 500px; margin: 0 auto"></div>
+        <p><small>The edge at 2014-02 seems to be a problem at packagist.<br/>Some package releases from that month have a empty timestamp.</small></p>
+        <p>Total number of Packages.</p>
+        <div id="statistics_pie_chart_packages" style="width: 100%; height: 500px; margin: 0 auto"></div>
+
+        <br/><hr><br/>
+
+        <h2>Number of Releases</h2>
+        <p>This is the accumulated number of releases per month.<br/>A package can have multiple releases like "v1.2.3", which will be normalized to a hhvm status on each day.</p>
+        <div id="statistics_chart_releases" style="width: 100%; height: 500px; margin: 0 auto"></div>
+        <br/>
+        <p>Total number of Releases.</p>
+        <div id="statistics_pie_chart_releases" style="width: 100%; height: 500px; margin: 0 auto"></div>
+
+        <br/><br/><br/><br/><br/><br/>
+        <p><small><b>Hint:</b><br/>The numbers of the last month might be odd,<br/>because the month has not yet ended.</small></p>
 
     </div>
 {% endblock %}

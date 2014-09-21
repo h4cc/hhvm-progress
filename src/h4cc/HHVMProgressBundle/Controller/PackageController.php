@@ -31,6 +31,10 @@ class PackageController extends Controller
 
     public function needingHelpAction(Request $request)
     {
+
+
+
+
         $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
 
         $packages = array_merge(
