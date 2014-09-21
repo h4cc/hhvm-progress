@@ -25,10 +25,10 @@ class StatsController extends Controller
             'h4ccHHVMProgressBundle:Stats:index.html.twig',
             array(
                 'chart_packages' => $this->getChartPackages($hhvmToYearsAndMonths, $packages, $yearsAndMonths),
-                'pie_chart_packages' => $this->getPieChartPackages($packages),
+                //'pie_chart_packages' => $this->getPieChartPackages($packages),
 
                 'chart_releases' => $this->getChartReleases($packageStats),
-                'pie_chart_releases' => $this->getPieChartReleases($packageStats),
+                //'pie_chart_releases' => $this->getPieChartReleases($packageStats),
             )
         );
     }
@@ -109,12 +109,14 @@ class StatsController extends Controller
 
         $dates = array_values(array_unique($dates));
 
+        /*
         // Removing the last month, because it is not yet complete and will show strange numbers.
         array_pop($dates);
         foreach($data as $hhvmStatus => $list) {
             array_pop($list);
             $data[$hhvmStatus] = $list;
         }
+        */
 
         $series = array(
             array(
@@ -214,17 +216,17 @@ class StatsController extends Controller
         $series = array(
             array(
                 "name" => "Tested",
-                "data" => $this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_SUPPORTED]),
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_SUPPORTED]),
                 'color' => '#5CB85C',
             ),
             array(
                 "name" => "Partially tested",
-                "data" => $this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_ALLOWED_FAILURE]),
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_ALLOWED_FAILURE]),
                 'color' => '#F0AD4E',
             ),
             array(
                 "name" => "Not tested",
-                "data" => $this->sumPrevToCurrentArray($data[PackageVersion::HHVM_STATUS_NONE]),
+                "data" => array_values($data[PackageVersion::HHVM_STATUS_NONE]),
                 'color' => '#D9534F',
             ),
         );
@@ -244,18 +246,6 @@ class StatsController extends Controller
         $chart->tooltip->shared(true);
 
         return $chart;
-    }
-
-    private function sumPrevToCurrentArray(array $numbers)
-    {
-        $summed = array();
-        $sum = 0;
-        foreach ($numbers as $number) {
-            $summed[] = $number + $sum;
-            $sum += $number;
-        }
-
-        return $summed;
     }
 
     private function listYearsAndMonthsSince($year, $month)
