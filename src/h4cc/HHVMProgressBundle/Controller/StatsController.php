@@ -14,7 +14,7 @@ class StatsController extends Controller
     {
         $hhvmToYearsAndMonths = $this->mapFromHHVMStatusToYearsAndMonths();
         $packages = $this->fetchPackageVersionGroupedByTimeAndHHVMStatus();
-        $yearsAndMonths = $this->listYearsAndMonthsSince('2013', '02');
+        $yearsAndMonths = $this->listYearsAndMonthsSince('2011', '10');
 
         /** @var PackageStatsRepository $repo */
         $repo = $this->get('h4cc_hhvm_progress.repos.package_stats');
@@ -290,7 +290,7 @@ class StatsController extends Controller
     private function mapFromHHVMStatusToYearsAndMonths()
     {
         // Transforming data
-        $yearsAndMonths = $this->listYearsAndMonthsSince('2013', '02');
+        $yearsAndMonths = $this->listYearsAndMonthsSince('2011', '11');
         $data = array(
             PackageVersion::HHVM_STATUS_NONE => array(),
             PackageVersion::HHVM_STATUS_ALLOWED_FAILURE => array(),
