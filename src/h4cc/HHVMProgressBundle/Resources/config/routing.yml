@@ -104,10 +104,6 @@ h4cc_hhvm_progress_graphs_list:
 
 #--- Statistics
 
-h4cc_hhvm_progress_statistics_acc:
-    pattern:  /statistics/acc
-    defaults: { _controller: h4ccHHVMProgressBundle:Stats:accumulated }
-
 h4cc_hhvm_progress_statistics_index:
     pattern:  /statistics/
     defaults: { _controller: h4ccHHVMProgressBundle:Stats:index }
