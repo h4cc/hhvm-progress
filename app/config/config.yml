@@ -60,12 +60,23 @@ knp_paginator:
     template:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
 
-lsw_memcache:
-    session:
-        client: default
-    clients:
-        default:
-            hosts:
-              - { dsn: localhost, port: 11211 }
-            options:
-                prefix_key: "hhvm_"
+#lsw_memcache:
+#    session:
+#        client: default
+#    clients:
+#        default:
+#            hosts:
+#              - { dsn: localhost, port: 11211 }
+#            options:
+#                prefix_key: "hhvm_"
+
+doctrine_cache:
+    providers:
+        cache:
+            namespace: hhvm_
+            memcached:
+                servers:
+                    127.0.0.1: 11211
+            aliases:
+                - memcache.default
+

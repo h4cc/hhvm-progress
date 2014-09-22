@@ -15,7 +15,8 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             //new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new Lsw\MemcacheBundle\LswMemcacheBundle(),
+            //new Lsw\MemcacheBundle\LswMemcacheBundle(),
+            new \Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new Ob\HighchartsBundle\ObHighchartsBundle(),
             new h4cc\HHVMProgressBundle\h4ccHHVMProgressBundle(),
         );

@@ -39,12 +39,12 @@ class PageController extends Controller
     private function getCachedStats() {
         $cache = $this->get('memcache.default');
 
-        $stats = $cache->get('stats');
+        $stats = $cache->fetch('stats');
 
         if(!$stats) {
             $stats = $this->get('h4cc_hhvm_progress.package.stats')->getStatsByHHVMState();
 
-            $cache->set('stats', $stats, 60);
+            $cache->save('stats', $stats, 60);
         }
 
         return $stats;
