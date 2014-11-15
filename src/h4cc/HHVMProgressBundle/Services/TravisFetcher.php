@@ -24,7 +24,14 @@ class TravisFetcher
     /** @var  string */
     private $content = '';
 
+    /** @var array available hhvm versions on travis */
     private $hhvmStrings = array('hhvm', 'hhvm-nightly');
+
+    /** @var array hhvm build string found on travis.yml */
+    protected $hhvmBuilds = array();
+
+    /** @var array hhvm strings found in allowed failure travis.yml */
+    protected $hhvmAllowedFailure = array();
 
     public function __construct(LoggerInterface $logger, Github $github) {
         $this->github = $github;
@@ -84,26 +91,28 @@ class TravisFetcher
         }
 
         // Check language.
-        if(isset($data['language']) && 'php' == $data['language']) {
-            // This is a PHP build, so keep on.
-        }else{
+        if(isset($data['language']) && 'php' != $data['language']) {
+            // This is NOT a PHP build, so return.
             return PackageVersion::HHVM_STATUS_NO_PHP;
         }
 
         // Check php versions.
-        if(isset($data['php'])) {
-            if(is_array($data['php'])) {
-                $supports = false;
-                foreach($data['php'] as $phpVersion) {
-                    if($this->isHHVMString($phpVersion)) {
-                        $supports = true;
-                    }
-                }
-            }else{
-                $supports = $this->isHHVMString($data['php']);
-            }
-        }else{
+        if(!isset($data['php'])) {
+            // No php versions are set in this travis file, weird..
             return PackageVersion::HHVM_STATUS_NO_PHP;
+        }
+
+        // refactor here, if data is a string convert to a single array and DRY
+        if (!is_array($data['php'])) {
+            $data['php'] = array($data['php']);
+        }
+
+        $supports = false;
+        foreach($data['php'] as $phpVersion) {
+            if($this->isHHVMString($phpVersion)) {
+                $supports = true;
+                $this->hhvmBuilds[] = $phpVersion;
+            }
         }
 
         // Check allowed failure matrix.
@@ -111,22 +120,29 @@ class TravisFetcher
             $af = $data['matrix']['allow_failures'];
             foreach($af as $keyValue) {
                 if(is_array($keyValue) && isset($keyValue['php'])) {
-                    if(is_array($keyValue['php'])) {
-                        foreach($keyValue['php'] as $phpString) {
-                            if($this->isHHVMString($phpString)) {
-                                return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
-                            }
-                        }
-                    }else{
-                        if($this->isHHVMString($keyValue['php'])) {
-                            return PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
+                    // refactor and DRY
+                    if (!is_array($keyValue['php'])) {
+                        $keyValue['php'] = array($keyValue['php']);
+                    }
+
+                    foreach($keyValue['php'] as $phpString) {
+                        if($this->isHHVMString($phpString)) {
+                            $this->hhvmAllowedFailure[] = $phpString;
                         }
                     }
                 }
             }
         }
 
-        return ($supports) ? PackageVersion::HHVM_STATUS_SUPPORTED : PackageVersion::HHVM_STATUS_NONE;
+        // array with hhvm string of not allowed hhvm builds
+        // for now if at least one hhvm string is not allowed to fail, we'll mark
+        // the project as tested.
+        $hhvmNonFailureAllowed = array_diff($this->hhvmBuilds, $this->hhvmAllowedFailure);
+        $returnValue = !empty($hhvmNonFailureAllowed)
+            ? PackageVersion::HHVM_STATUS_SUPPORTED
+            : PackageVersion::HHVM_STATUS_ALLOWED_FAILURE;
+
+        return ($supports) ? $returnValue : PackageVersion::HHVM_STATUS_NONE;
     }
 
     private function isHHVMString($string) {
