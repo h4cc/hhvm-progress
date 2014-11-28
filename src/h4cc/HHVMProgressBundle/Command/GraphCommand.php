@@ -33,6 +33,7 @@ class GraphCommand extends ContainerAwareCommand
           '2.3.*' => 'symfony_2_3',
           '2.4.*' => 'symfony_2_4',
           '2.5.*' => 'symfony_2_5',
+          '2.6.*' => 'symfony_2_6',
         );
 
         foreach ($sfVersions as $version => $name) {
