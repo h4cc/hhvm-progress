@@ -10,14 +10,17 @@ class SearchController extends Controller
     public function resultAction(Request $request)
     {
         $packages = array();
-        if($request->query->has('pattern')) {
+        if ($request->query->has('pattern')) {
             $pattern = $request->get('pattern');
-            $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->findWhereNameContains($pattern);
+            $packages = $this->get('h4cc_hhvm_progress.repos.package')->searchByNamePattern($pattern);
         }
 
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($packages, $request->query->get('page', 1), 100);
 
-        return $this->render('h4ccHHVMProgressBundle:Search:result.html.twig', array('pagination' => $pagination));
+        return $this->render('h4ccHHVMProgressBundle:Search:result.html.twig', array(
+            'pagination' => $pagination,
+            'show_result' => (bool)$packages,
+        ));
     }
 }

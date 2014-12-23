@@ -10,16 +10,21 @@
             <th>Description</th>
         </tr>
         {% for package in packages %}
+            {% if package.package is defined %}
+                {% set info = package.package %}
+            {% else %}
+                {% set info = package %}
+            {% endif %}
             <tr>
                 <td>
-                    <a href="https://packagist.org/packages/{{ package.name }}" class="pull-right">
-                        <img src="{{ asset('images/packagist.ico') }}" alt="{{ package.name }} on Packagist" />
+                    <a href="https://packagist.org/packages/{{ info.name }}" class="pull-right">
+                        <img src="{{ asset('images/packagist.ico') }}" alt="{{ info.name }} on Packagist"/>
                     </a>
-                    <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': package.name}) }}">
-                        {{ package.name }}
+                    <a href="{{ path('h4cc_hhvm_progress_packages_show', {'name': info.name}) }}">
+                        {{ info.name }}
                     </a>
                 </td>
-                <td>{{ package.description }}</td>
+                <td>{{ info.description }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -28,10 +33,10 @@
         {{ knp_pagination_render(packages) }}
     </div>
 
-    <br style="clear: both" />
+    <br style="clear: both"/>
 
 {% else %}
 
     <p>No packages to show :(</p>
 
-{%  endif %}
+{% endif %}

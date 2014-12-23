@@ -50,6 +50,7 @@
 
     <p>More about this package on <a href="https://packagist.org/packages/{{ name }}">Packagist</a></p>
 
+    {% set versions = package.versions %}
     {% if versions %}
         <table class="table table-bordered">
             <tr>
@@ -62,29 +63,17 @@
                 </th>
             </tr>
             {% for version in versions %}
-                <tr class="
-        {% if version.hhvmStatus == -2 %}active{% endif %}
-        {% if version.hhvmStatus == -1 %}active{% endif %}
-        {% if version.hhvmStatus == 1 %}danger{% endif %}
-        {% if version.hhvmStatus == 2 %}warning{% endif %}
-        {% if version.hhvmStatus == 3 %}success{% endif %}
-        ">
-                    <td>{{ version.name }}</td>
-                    <td>{{ version.type }}</td>
-                    <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}</td>
+                {% set travis = version.travisContent %}
+                <tr class="{% if travis.hhvmStatus == 1 %}danger{%
+                endif %}{% if travis.hhvmStatus == 2 %}warning{% endif
+                %}{% if travis.hhvmStatus == 3 %}success{% endif %}">
+                    <td>{{ package.name }}</td>
+                    <td>{{ package.type }}</td>
+                    <td>{{ version.version }}</td>
                     <td>
-                        {% if version.hhvmStatus == -2 %}Unknown&nbsp;status{% endif %}
-                        {% if version.hhvmStatus == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
-                        {% if version.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
-                        {% if version.hhvmStatus == 2 %}<a
-                            href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                                Partially&nbsp;tested
-                            </a>
-                        {% endif %}
-                        {% if version.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
-                                Tested
-                            </a>
-                        {% endif %}
+                        {% if travis.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
+                        {% if travis.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">Partially&nbsp;tested</a>{% endif %}
+                        {% if travis.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">Tested</a>{% endif %}
                     </td>
                 </tr>
             {% endfor %}

@@ -60,6 +60,21 @@ knp_paginator:
     template:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
 
+
+aequasi_cache:
+    session:
+        enabled: true
+        instance: default
+        prefix: "hhvm_session_"
+        ttl: 7200
+    instances:
+        default:
+          persistent: true # Boolean or persistent_id
+          namespace: hhvm_
+          type: memcached
+          hosts:
+              - { host: localhost, port: 11211 }
+
 #lsw_memcache:
 #    session:
 #        client: default

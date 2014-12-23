@@ -44,9 +44,14 @@ class PackageUpdater
         try {
             $infos = $this->packagist->getInfosByName($name);
 
+            var_dump($infos);
+
             $this->deleteAllVersionsForPackageThatDoesNotExistAnymore($infos);
 
             foreach($infos->getVersions() as $version) {
+
+                var_dump($name, $version);
+
                 $this->updatePackageVersion($name, $version);
             }
         }catch(GuzzleClientErrorResponseException $e) {

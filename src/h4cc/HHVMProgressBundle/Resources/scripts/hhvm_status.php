@@ -72,7 +72,7 @@ function displayHHVMStatusLine(array $package) {
         case 'tested':
             echo "Tested        ";
             break;
-        case 'partial_tested':
+        case 'partial':
             echo "Partial tested";
             break;
         default:

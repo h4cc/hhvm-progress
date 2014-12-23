@@ -11,26 +11,26 @@
     </p>
 
     <div class="progress">
-        <div class="progress-bar progress-bar-success" style="width: {{ stats.supported_percent }}%;">
+        <div class="progress-bar progress-bar-success" style="width: {{ stats.tested_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
-                    {{ stats.supported }}
+                    {{ stats.tested }}
                 </a>
             </span>
         </div>
         <div class="progress-bar progress-bar-warning"
-             style="width: {{ stats.allowed_failure_percent }}%;">
+             style="width: {{ stats.partial_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                    {{ stats.allowed_failure }}
+                    {{ stats.partial }}
                 </a>
             </span>
         </div>
         <div class="progress-bar progress-bar-danger"
-             style="width: {{ stats.not_supported_percent }}%;">
+             style="width: {{ stats.not_tested_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_needing_help') }}">
-                    {{ stats.not_supported }}
+                    {{ stats.not_tested }}
                 </a>
             </span>
         </div>

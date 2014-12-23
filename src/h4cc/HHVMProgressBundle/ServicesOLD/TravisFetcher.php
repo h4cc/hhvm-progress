@@ -63,6 +63,8 @@ class TravisFetcher
             }
         }
 
+        var_dump($this->content);
+
         // Fetcher can return 'false', what means fetching failed.
         if(false === $this->content) {
             $this->logger->debug("Fetching travis file failed.");

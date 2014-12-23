@@ -1,0 +1,4 @@
+language: java
+
+foo:
+  bar: 42

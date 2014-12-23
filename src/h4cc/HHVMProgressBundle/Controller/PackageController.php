@@ -3,17 +3,19 @@
 namespace h4cc\HHVMProgressBundle\Controller;
 
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
+use h4cc\HHVMProgressBundle\HHVM;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PackageController extends Controller
 {
-    const PER_PAGE = 100;
+    const PER_PAGE = 10;
 
     public function listSupportingAction(Request $request)
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_SUPPORTED);
+        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_SUPPORTED);
 
         $pagination = $this->paginate($packages, $request);
 
@@ -22,7 +24,7 @@ class PackageController extends Controller
 
     public function listAllowedFailureAction(Request $request)
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.package_version')->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_ALLOWED_FAILURE);
+        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_ALLOWED_FAILURE);
 
         $pagination = $this->paginate($packages, $request);
 
@@ -31,23 +33,11 @@ class PackageController extends Controller
 
     public function needingHelpAction(Request $request)
     {
-
-
-
-
-        $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
-
-        $packages = array_merge(
-            $repo->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_UNKNOWN),
-            $repo->getAllByMaxHHVMStatus(PackageVersion::HHVM_STATUS_NONE)
-        );
+        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_NONE);
 
         $pagination = $this->paginate($packages, $request);
 
-        return $this->render(
-                    'h4ccHHVMProgressBundle:Package:needing_help.html.twig',
-                    array('pagination' => $pagination)
-        );
+        return $this->render('h4ccHHVMProgressBundle:Package:needing_help.html.twig', array('pagination' => $pagination));
     }
 
     public function apiUpdatePackageAction($name)
@@ -64,46 +54,37 @@ class PackageController extends Controller
 
     public function apiGetPackageAction($name)
     {
-        /** @var PackageVersion[] $versions */
-        $versions = $this->get('h4cc_hhvm_progress.repos.package_version')->getByName($name);
-
-        if(!$versions) {
-            return new JsonResponse(array('error' => 404), 404);
+        $package = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
+        if(!$package) {
+            throw new NotFoundHttpException();
         }
 
-        // Get Latest version, prefer dev-master
-        $latestVersion = reset($versions);
-        foreach($versions as $version) {
-            if('9999999-dev' == $version->getVersion()) {
-                $latestVersion = $version;
-                break;
-            }
-        }
-
-        $response = array(
-            'name' => $latestVersion->getName(),
-            'description' => $latestVersion->getDescription(),
-            'versions' => array(),
-        );
-
-        foreach($versions as $version) {
-            $response['versions'][$version->getVersion()] = array(
+        $versions = array();
+        foreach($package->getVersions() as $version) {
+            $travis = $version->getTravisContent();
+            $versions[$version->getVersionNormalized()] = array(
                 'version' => $version->getVersion(),
-                'reference' => $version->getGitReference(),
-                'type' => $version->getType(),
-                'hhvm_status_string' => $version->getHhvmStatusAsString(),
-                'hhvm_status' => $version->getHhvmStatus(),
+                'version_normalized' => $version->getVersionNormalized(),
+                'reference' => $version->getSourceReference(),
+                'type' => $package->getType(),
+                'hhvm_status' => $travis->getHhvmStatus(),
+                'hhvm_status_string' => $travis->getHhvmStatusString(),
             );
         }
 
-        return new JsonResponse($response);
+        return new JsonResponse(array(
+            'name' => $package->getName(),
+            'description' => $package->getDescription(),
+            'type' => $package->getType(),
+            'versions' => $versions
+        ));
     }
 
     public function showPackageAction($name)
     {
-        $versions = $this->get('h4cc_hhvm_progress.repos.package_version')->getByName($name);
+        $package = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
 
-        return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'versions' => $versions));
+        return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'package' => $package));
     }
 
     private function paginate($rows, Request $request) {
