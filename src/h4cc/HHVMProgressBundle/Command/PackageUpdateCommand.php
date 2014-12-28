@@ -55,6 +55,7 @@ class PackageUpdateCommand extends ContainerAwareCommand
         $updater = $this->getContainer()->get('h4cc_hhvm_progress.package.updater');
 
         foreach($packages as $package) {
+            $output->writeln("Updating package: ".$package);
             $updater->updatePackage($package);
         }
     }
