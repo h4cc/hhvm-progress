@@ -40,8 +40,8 @@
     <div class="well well-sm pull-right" style="width: 90px;">
         <a href="#" id="badge-popover"
            data-alt="HHVM Status"
-           data-badge-url="{{ url('h4cc_hhvm_progress_badges_show', {"name": name, "type": "svg"}) }}"
-           data-site-url="{{ url('h4cc_hhvm_progress_packages_show', {"name": name}) }}">
+           data-badge-url="{{ path('h4cc_hhvm_progress_badges_show', {"name": name, "type": "svg"}) }}"
+           data-site-url="{{ path('h4cc_hhvm_progress_packages_show', {"name": name}) }}">
             Badges <span class="glyphicon glyphicon-info-sign"></span>
         </a>
     </div>
@@ -113,7 +113,7 @@
 
                 $.ajax({
                     type: 'GET',
-                    url: '{{ url('h4cc_hhvm_progress_packages_api_update', {"name": name}) }}'
+                    url: '{{ path('h4cc_hhvm_progress_packages_api_update', {"name": name}) }}'
                 }).done(function() {
                     // Reload current page
                     $.ajax({
