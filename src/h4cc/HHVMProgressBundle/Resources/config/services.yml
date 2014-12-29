@@ -46,6 +46,13 @@ services:
         calls:
           - [setLogger, [@logger]]
 
+    h4cc_hhvm_progress.travis_status_updater:
+        class: h4cc\HHVMProgressBundle\Services\TravisStatusUpdater
+        arguments:
+          - @h4cc_hhvm_progress.repos.travis_content
+          - @h4cc_hhvm_progress.travis_parser
+          - @logger
+
 #--- Repos ---
 
     h4cc_hhvm_progress.repos.package:

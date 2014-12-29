@@ -22,7 +22,7 @@ class PackageUpdateCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $local = false;
+        $local = true;
 
         if($local) {
             // Packages for testing all three possible hhvm status.

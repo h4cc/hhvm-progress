@@ -31,9 +31,7 @@ class TravisParser
 
         try {
             $data = Yaml::parse($content);
-            //var_dump($content, $data);
         }catch(\Exception $e) {
-            var_dump($e);
             $this->logger->info($e->getMessage());
             $this->logger->debug($e);
 

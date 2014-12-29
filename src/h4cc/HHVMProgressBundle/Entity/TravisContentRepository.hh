@@ -85,6 +85,10 @@ class TravisContentRepository
         return $result;
     }
 
+    public function all() {
+        return $this->repo->findAll();
+    }
+
     public function save(TravisContent $travisContent) {
         $this->om->persist($travisContent);
         $this->om->flush();
