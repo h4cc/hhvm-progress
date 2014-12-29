@@ -11,15 +11,45 @@ imports:
 #        result_cache_driver: apc
 #        query_cache_driver: apc
 
+# Default logger config
+#monolog:
+#    handlers:
+#        main:
+#            type:         fingers_crossed
+#            action_level: error
+#            handler:      nested
+#        nested:
+#            type:  stream
+#            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+#            level: debug
+#        console:
+#            type:  console
+
 monolog:
     handlers:
+        # Handle logging for files and graylog differently.
         main:
+            type:    group
+            members: [graylog2, logfile]
+
+        # Writing to logfile, only when there is at least a warning.
+        logfile:
             type:         fingers_crossed
-            action_level: error
-            handler:      nested
-        nested:
+            action_level: warning
+            handler:      logfile_writer
+        logfile_writer:
             type:  stream
-            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            path:  %kernel.logs_dir%/%kernel.environment%.log
             level: debug
+
+        # Writing everything to graylog2.
+        graylog2:
+            type: gelf
+            publisher:
+                hostname: 192.168.0.82
+                port: 12201
+            level: debug
+
         console:
             type:  console
+

@@ -95,3 +95,16 @@ doctrine_cache:
             aliases:
                 - memcache.default
 
+silpion_logger_extra:
+    # If a random request_id should be added to the [extra] section of each log message.
+    request_id:           true
+    # If a salted SHA1 of the session_id should be added to the [extra] section of each log message.
+    session_id:           true
+    # A list of "key: value" entries that will be set in the [extra] section of each log message (Overwrites existing keys!).
+    #additions:
+    #    server_id: 42
+    logger:
+        # Will create a log entry on each incoming request.
+        on_request:           true
+        # Will create a log entry on each outgoing response.
+        on_response:          true
