@@ -30,7 +30,7 @@ class ComposerCheckController extends Controller
 
         $includeDevs = (1 == $request->get('dev'));
 
-        $graph = new GraphComposer($this->get('h4cc_hhvm_progress.repos.package_version'));
+        $graph = $this->get('h4cc_hhvm_progress.graph_composer');
         $graph->analyze($composerContent, $composerLockContent, $includeDevs);
 
         $graphImage = $graph->getImage();

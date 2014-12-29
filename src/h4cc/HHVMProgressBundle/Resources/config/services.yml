@@ -121,6 +121,11 @@ services:
     h4cc_hhvm_progress.orm.entity_manager:
         alias: "doctrine.orm.entity_manager"
 
+    h4cc_hhvm_progress.graph_composer:
+        class: h4cc\HHVMProgressBundle\Graph\GraphComposer
+        arguments:
+          - @h4cc_hhvm_progress.repos.package_version
+
 #--- Twig
 
     h4cc_hhvm_progress.twig.hhvm_extension:

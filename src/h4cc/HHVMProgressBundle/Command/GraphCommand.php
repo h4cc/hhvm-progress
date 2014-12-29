@@ -33,6 +33,7 @@ class GraphCommand extends ContainerAwareCommand
           '2.3.*' => 'symfony_2_3',
           '2.4.*' => 'symfony_2_4',
           '2.5.*' => 'symfony_2_5',
+          '2.6.*' => 'symfony_2_6',
         );
 
         foreach ($sfVersions as $version => $name) {
@@ -259,10 +260,10 @@ class GraphCommand extends ContainerAwareCommand
         $composerContent = file_get_contents($path . '/composer.json');
         $composerLockContent = file_get_contents($path . '/composer.lock');
 
-        $graph = new GraphComposer($composerContent, $composerLockContent, $dev);
-        $graph->setPackageVersionRepo($this->getContainer()->get('h4cc_hhvm_progress.repos.package_version'));
+        $graphComposer = $this->getContainer()->get('h4cc_hhvm_progress.graph_composer');
+        $graphComposer->analyze($composerContent, $composerLockContent, $dev);
 
-        $image = $graph->getImage();
+        $image = $graphComposer->getImage();
 
         if (!$image) {
             throw new \RuntimeException("Could not generate composer graph image.");

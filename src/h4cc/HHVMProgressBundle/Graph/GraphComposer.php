@@ -57,6 +57,7 @@ class GraphComposer
     public function analyze($composerContent, $composerLockContent, $includeDevs = true)
     {
         $this->dependencyGraph = $this->analyzer->analyzeComposerData($composerContent, $composerLockContent, null, $includeDevs);
+        return $this;
     }
 
     private function getLayoutVertexForPackage($name, $version)
