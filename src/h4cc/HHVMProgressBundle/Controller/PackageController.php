@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PackageController extends Controller
 {
-    const PER_PAGE = 10;
+    const PER_PAGE = 100;
 
     public function listSupportingAction(Request $request)
     {
