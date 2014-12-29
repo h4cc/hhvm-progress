@@ -40,6 +40,7 @@ services:
         arguments:
           - @logger
           - @h4cc_hhvm_progress.github_client
+          - %github_tokens%
 
     h4cc_hhvm_progress.travis_parser:
         class: h4cc\HHVMProgressBundle\Services\TravisParser
@@ -83,8 +84,6 @@ services:
 
     h4cc_hhvm_progress.github_client:
         class: Github\Client
-        calls:
-          - [authenticate, [%github_token%, "http_token"]]
 
     h4cc_hhvm_progress.doctrine_repo.package:
         public: false

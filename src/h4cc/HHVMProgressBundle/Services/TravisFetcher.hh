@@ -13,10 +13,12 @@ class TravisFetcher
 {
     private LoggerInterface $logger;
     private GithubClient $github;
+    private array $githubTokens;
 
-    public function __construct(LoggerInterface $logger, GithubClient $github) {
+    public function __construct(LoggerInterface $logger, GithubClient $github, array $githubTokens) {
         $this->logger = $logger;
         $this->github = $github;
+        $this->githubTokens = $githubTokens;
     }
 
     public function fetchTravisContentFromSource(Source $source)
@@ -46,6 +48,46 @@ class TravisFetcher
     }
 
     public function fetchGithub($user, $repo, $branch) {
+        try {
+            return $this->fetchGithubWithoutRetry($user, $repo, $branch);
+        }
+        catch(GithubAuthErrorException $e) {
+            $this->logger->info('Using next github token because of GithubAuthErrorException.');
+            $this->logger->debug($e);
+            if(!$this->useNextGithubToken()) {
+                throw $e;
+            }
+        }
+        catch(GithubRateLimitException $e) {
+            $this->logger->info('Using next github token because of GithubRateLimitException.');
+            $this->logger->debug($e);
+            if(!$this->useNextGithubToken()) {
+                throw $e;
+            }
+        }
+
+        // Retry with new github token.
+        return $this->fetchGithub($user, $repo, $branch);
+    }
+
+    private function useNextGithubToken() {
+        if(!$this->githubTokens) {
+            return false;
+        }
+
+        // Using a random token and remove it from array.
+        $randomKey = array_rand($this->githubTokens, 1);
+        $nextToken = $this->githubTokens[$randomKey];
+        unset($this->githubTokens[$randomKey]);
+
+        $this->logger->debug('Using GithubToken: '. $nextToken);
+
+        $this->github->authenticate($nextToken, "http_token");
+
+        return true;
+    }
+
+    private function fetchGithubWithoutRetry($user, $repo, $branch) {
 
         // Fetch content
         $api = $this->github->api('repos')->contents();
