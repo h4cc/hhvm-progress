@@ -33,6 +33,7 @@ class TravisParserTest extends \PHPUnit_Framework_TestCase
             [__DIR__.'/Fixtures/php_no_hhvm.yml', HHVM::STATUS_NONE],
             [__DIR__.'/Fixtures/php_hhvm_allowedfailure.yml', HHVM::STATUS_ALLOWED_FAILURE],
             [__DIR__.'/Fixtures/php_hhvm.yml', HHVM::STATUS_SUPPORTED],
+            [__DIR__.'/Fixtures/symfony_20141228.yml', HHVM::STATUS_ALLOWED_FAILURE],
         ];
     }
 }

@@ -31,7 +31,9 @@ class TravisParser
 
         try {
             $data = Yaml::parse($content);
+            //var_dump($content, $data);
         }catch(\Exception $e) {
+            var_dump($e);
             $this->logger->info($e->getMessage());
             $this->logger->debug($e);
 
@@ -52,26 +54,37 @@ class TravisParser
             return HHVM::STATUS_NONE;
         }
 
-        if(!isset($data['php'])) {
-            // No php versions are set in this travis file, wierd.
-            return HHVM::STATUS_NONE;
-        }
-
         $hhvmBuilds = [];
         $hhvmAllowedFailure = [];
 
-        foreach($data['php'] as $phpVersion) {
-            if($this->isHHVMString($phpVersion)) {
-                $hhvmBuilds[] = $phpVersion;
+        // Check 'php' part for hhvm enabled builds.
+        if(isset($data['php']) && is_array($data['php'])) {
+            foreach($data['php'] as $phpVersion) {
+                if($this->isHHVMString($phpVersion)) {
+                    $hhvmBuilds[] = $phpVersion;
+                }
+            }
+        }
+
+        // Check include matrix for enabled builds.
+        if(isset($data['matrix']) && isset($data['matrix']['include'])) {
+            foreach($data['matrix']['include'] as $inc) {
+                if(is_array($inc) && isset($inc['php'])) {
+                    $inc['php'] = (array)$inc['php'];
+                    foreach($inc['php'] as $phpString) {
+                        if($this->isHHVMString($phpString)) {
+                            $hhvmBuilds[] = $phpString;
+                        }
+                    }
+                }
             }
         }
 
         // Check allowed failure matrix.
-        if($hhvmBuilds && isset($data['matrix']) && isset($data['matrix']['allow_failures'])) {
+        if(isset($data['matrix']) && isset($data['matrix']['allow_failures'])) {
             foreach($data['matrix']['allow_failures'] as $af) {
                 if(is_array($af) && isset($af['php'])) {
                     $af['php'] = (array)$af['php'];
-
                     foreach($af['php'] as $phpString) {
                         if($this->isHHVMString($phpString)) {
                             $hhvmAllowedFailure[] = $phpString;
