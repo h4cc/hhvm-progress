@@ -11,16 +11,37 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PackageUpdateCommand extends ContainerAwareCommand
 {
+    private $output;
+
     protected function configure()
     {
         $this
-          ->setName('h4cc:hhvm:package:update')
-          ->setDescription('Updates the index')
-          ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 200)
-        ;
+            ->setName('h4cc:hhvm:package:update')
+            ->setDescription('Updates the index')
+            ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 200);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->output = $output;
+        $this->input = $input;
+
+        $this->updatePackagesFromPackagistFeed();
+        $this->updatePackagesAtRandom();
+
+    }
+
+    protected function updatePackagesFromPackagistFeed()
+    {
+        $feeds = $this->getContainer()->get('h4cc_hhvm_progress.feeds.packagist');
+
+        $names = $feeds->getRecentPackageNames();
+
+        $this->output->writeln('Updating Packages from Feed: '.count($names));
+        $this->updatedPackagesByNames($names);
+    }
+
+    protected function updatePackagesAtRandom()
     {
         $local = false;
 
@@ -46,16 +67,21 @@ class PackageUpdateCommand extends ContainerAwareCommand
             shuffle($packages);
 
             // Apply argument
-            if($nop = $input->getOption('number-of-packages')) {
+            if($nop = $this->input->getOption('number-of-packages')) {
                 $packages = array_slice($packages, 0, $nop);
             }
         }
 
+        $this->output->writeln('Updating Random Packages: '.count($packages));
+        $this->updatedPackagesByNames($packages);
+    }
+
+    protected function updatedPackagesByNames(array $names) {
         /** @var \h4cc\HHVMProgressBundle\Services\PackageUpdater $updater */
         $updater = $this->getContainer()->get('h4cc_hhvm_progress.package.updater');
 
-        foreach($packages as $package) {
-            $output->writeln("Updating package: ".$package);
+        foreach($names as $package) {
+            $this->output->writeln("Updating package: ".$package);
             $updater->updatePackage($package);
         }
     }

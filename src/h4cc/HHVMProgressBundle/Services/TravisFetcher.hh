@@ -1,4 +1,4 @@
-<?hh
+<?hh // strict
 
 namespace h4cc\HHVMProgressBundle\Services;
 

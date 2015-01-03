@@ -11,6 +11,8 @@ services:
     h4cc_hhvm_progress.api.packagist:
         class: h4cc\HHVMProgressBundle\Services\PackagistApi
 
+    h4cc_hhvm_progress.feeds.packagist:
+        class: h4cc\HHVMProgressBundle\Services\PackagistFeeds
 
 #--- Packages
 
