@@ -15,6 +15,11 @@ class PackageVersionRepository
         $this->om = $om;
     }
 
+    public function getByPackage(Package $package) : array<PackageVersion>
+    {
+        return $this->repo->findBy(['package' => $package]);
+    }
+
     public function getByPackageAndVersion(Package $package, string $version) : ?PackageVersion
     {
         return $this->repo->findOneBy(['package' => $package, 'version' => $version]);

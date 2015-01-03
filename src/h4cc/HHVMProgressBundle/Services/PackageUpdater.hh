@@ -62,11 +62,28 @@ class PackageUpdater
         $package = $this->ensurePackageExists($name, $packageInfos);
 
         // Fetch Versions from packagist
-        foreach($packageInfos->getVersions() as $versionInfo) {
+        $versions = $packageInfos->getVersions();
+
+        // Update each version
+        foreach($versions as $versionInfo) {
             $this->updateVersionForPackageFromInfo($package, $versionInfo);
         }
 
-        // TODO: Delete not existing versions.
+        // Delete not existing versions.
+        $existingVersions = array_keys($versions);
+        $this->removeVersionsForPackageNotInList($package, $existingVersions);
+    }
+
+    private function removeVersionsForPackageNotInList($package, $existingVersions) {
+        $versions = $this->versions->getByPackage($package);
+
+        foreach($versions as $versionFromDB) {
+            if(!in_array($versionFromDB->getVersion(), $existingVersions)) {
+                $this->logger->debug('Removing version because packagist does not know it anymore: '.$versionFromDB->getId());
+
+                $this->versions->remove($versionFromDB);
+            }
+        }
     }
 
     private function updateVersionForPackageFromInfo(Package $package, VersionInfo $versionInfo)
