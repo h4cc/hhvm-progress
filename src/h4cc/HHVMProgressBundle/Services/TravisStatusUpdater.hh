@@ -14,13 +14,18 @@ class TravisStatusUpdater
     private TravisContentRepository $travisRepo;
     private TravisParser $travisParser;
 
-    public function __construct(TravisContentRepository $travisRepo, TravisParser $travisParser, LoggerInterface $logger) {
+    private $toUpdate = [];
+
+    public function __construct(TravisContentRepository $travisRepo, TravisParser $travisParser, LoggerInterface $logger)
+    {
         $this->travisRepo = $travisRepo;
         $this->travisParser = $travisParser;
         $this->logger = $logger;
     }
 
-    public function updateAllStatus() {
+    public function updateAllStatus()
+    {
+        $this->toUpdate = [];
         $contents = $this->travisRepo->all();
 
         foreach($contents as $content) {
@@ -28,9 +33,14 @@ class TravisStatusUpdater
             $this->updateContent($content);
             $this->updateStatusByFileExists($content);
         }
+
+        foreach($this->toUpdate as $content) {
+            $this->travisRepo->save($content);
+        }
     }
 
-    private function updateContent(TravisContent $content) {
+    private function updateContent(TravisContent $content)
+    {
         if(!$content->getContent()) {
             // No content, no parsing.
             return;
@@ -43,18 +53,18 @@ class TravisStatusUpdater
 
             $content->setHhvmStatus($parsedHhvmStatus);
 
-            $this->travisRepo->save($content);
+            $this->toUpdate[] = $content;
         }
     }
 
-    private function updateStatusByFileExists(TravisContent $content) {
-
+    private function updateStatusByFileExists(TravisContent $content)
+    {
         if(!$content->getFileExists() && HHVM::STATUS_UNKNOWN != $content->getHhvmStatus()) {
             $this->logger->debug('Updating travis content '.$content->getId().' because file does not exist HHVM status from '.$content->getHhvmStatus().' to '.HHVM::STATUS_UNKNOWN);
 
             $content->setHhvmStatus(HHVM::STATUS_UNKNOWN);
 
-            $this->travisRepo->save($content);
+            $this->toUpdate[] = $content;
         }
     }
 }
