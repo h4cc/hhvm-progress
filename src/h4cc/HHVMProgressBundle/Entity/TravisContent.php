@@ -50,7 +50,7 @@ class TravisContent
      *
      * @ORM\Column(name="hhvm_status", type="integer")
      */
-    private $hhvm_status = HHVM::STATUS_NONE;
+    private $hhvm_status = HHVM::STATUS_UNKNOWN;
 
     /**
      * @var

@@ -26,6 +26,7 @@ class TravisStatusUpdater
         foreach($contents as $content) {
             $this->logger->debug('Checking travis content '.$content->getId());
             $this->updateContent($content);
+            $this->updateStatusByFileExists($content);
         }
     }
 
@@ -41,6 +42,17 @@ class TravisStatusUpdater
             $this->logger->debug('Updating travis content '.$content->getId().' HHVM status from '.$content->getHhvmStatus().' to '.$parsedHhvmStatus);
 
             $content->setHhvmStatus($parsedHhvmStatus);
+
+            $this->travisRepo->save($content);
+        }
+    }
+
+    private function updateStatusByFileExists(TravisContent $content) {
+
+        if(!$content->getFileExists() && HHVM::STATUS_UNKNOWN != $content->getHhvmStatus()) {
+            $this->logger->debug('Updating travis content '.$content->getId().' because file does not exist HHVM status from '.$content->getHhvmStatus().' to '.HHVM::STATUS_UNKNOWN);
+
+            $content->setHhvmStatus(HHVM::STATUS_UNKNOWN);
 
             $this->travisRepo->save($content);
         }

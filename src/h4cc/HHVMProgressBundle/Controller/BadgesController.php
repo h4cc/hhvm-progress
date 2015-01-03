@@ -30,7 +30,11 @@ class BadgesController extends Controller
     {
         $branch = $request->get('branch', 'dev-master');
 
-        $packageVersion = $this->getPackageVersion($name, $branch);
+        try {
+            $packageVersion = $this->getPackageVersion($name, $branch);
+        }catch(NotFoundHttpException $e) {
+            return new Response('', 404);
+        }
 
         $badgeFile = HHVM::getStringForStatus($packageVersion->getTravisContent()->getHhvmStatus());
 

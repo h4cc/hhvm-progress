@@ -34,10 +34,19 @@
                 </a>
             </span>
         </div>
+        <div class="progress-bar progress-bar-default"
+             style="width: {{ stats.unknown_percent }}%;">
+            <span>
+                   {{ stats.unknown }}
+            </span>
+        </div>
     </div>
 
     <p class="lead">
-        Green is <span class="hhvm_supported">tested against HHVM</span>, orange is <span class="hhvm_allowed_failure">partially tested against HHVM</span> and red is <span class="hhvm_not_supported">not using HHVM</span> to run their tests.
+        Green is <span class="hhvm_supported">tested against HHVM</span>,
+        orange is <span class="hhvm_allowed_failure">partially tested against HHVM</span> and
+        red is <span class="hhvm_not_supported">not using HHVM</span> to run their tests.
+        Gray is <span class="hhvm_unknown">not using Travis</span> at all.
     </p>
 </div>
 

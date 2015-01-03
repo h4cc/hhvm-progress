@@ -18,19 +18,10 @@ class PageController extends Controller
         }
 
         // Calculate percentages of progress bars.
+        $stats['unknown_percent'] = max(5, $stats['unknown'] / $stats['total'] * 100);
         $stats['tested_percent'] = max(5, $stats['tested'] / $stats['total'] * 100);
         $stats['partial_percent'] = max(5, $stats['partial'] / $stats['total'] * 100);
-        $stats['not_tested_percent'] = 100 - $stats['tested_percent'] - $stats['partial_percent'];
-
-        /*
-        $stats['supported'] = 2;
-        $stats['allowed_failure'] = 2;
-        $stats['not_supported'] = 16;
-
-        $stats['supported_percent'] = 10;
-        $stats['allowed_failure_percent'] = 10;
-        $stats['not_supported_percent'] = 80;
-        */
+        $stats['not_tested_percent'] = 100 - $stats['tested_percent'] - $stats['partial_percent'] - $stats['unknown_percent'];
 
         return $this->render('h4ccHHVMProgressBundle:Page:index.html.twig', array('stats' => $stats));
     }
@@ -53,6 +44,7 @@ class PageController extends Controller
 
         $stats = $cache->fetch('stats');
         if(!$stats) {
+
             $stats = $this->get('h4cc_hhvm_progress.repos.travis_content')->getMaxHHVMStatusCount();
 
             $cache->save('stats', $stats, 60);

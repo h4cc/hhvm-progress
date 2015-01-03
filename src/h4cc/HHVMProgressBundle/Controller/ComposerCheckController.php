@@ -79,7 +79,7 @@ class ComposerCheckController extends Controller
             $version = $versionsRepo->getByPackageNameAndVersion($packageName, $package['version']);
 
             if (!$version) {
-                $package['hhvm_status'] = HHVM::STATUS_NONE;
+                $package['hhvm_status'] = HHVM::STATUS_UNKNOWN;
             } else {
                 $package['hhvm_status'] = $version->getTravisContent()->getHhvmStatus();
             }
