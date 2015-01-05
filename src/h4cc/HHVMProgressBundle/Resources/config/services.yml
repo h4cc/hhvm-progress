@@ -127,6 +127,7 @@ services:
         class: h4cc\HHVMProgressBundle\Graph\GraphComposer
         arguments:
           - @h4cc_hhvm_progress.repos.package_version
+          - @h4cc_hhvm_progress.repos.travis_content
 
 #--- Twig
 

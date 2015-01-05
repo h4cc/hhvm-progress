@@ -4,11 +4,11 @@
 namespace h4cc\HHVMProgressBundle\Graph;
 
 use Composer\Package\Version\VersionParser;
-use Fhaculty\Graph\GraphViz;
 use Fhaculty\Graph\Graph;
-
+use Fhaculty\Graph\GraphViz;
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
+use h4cc\HHVMProgressBundle\Entity\TravisContentRepository;
 use h4cc\HHVMProgressBundle\HHVM;
 use JMS\Composer\DependencyAnalyzer;
 
@@ -42,13 +42,18 @@ class GraphComposer
     /** @var  PackageVersionRepository */
     private $repository;
 
+    private $travisRepo;
+
     private $versionParser;
 
     private $analyzer;
 
-    public function __construct(PackageVersionRepository $repository)
+    private $maxHhvmStatusForName = [];
+
+    public function __construct(PackageVersionRepository $repository, TravisContentRepository $repoTravis)
     {
         $this->repository = $repository;
+        $this->travisRepo = $repoTravis;
         $this->versionParser = new VersionParser();
 
         $this->analyzer = new DependencyAnalyzer();
@@ -56,6 +61,7 @@ class GraphComposer
 
     public function analyze($composerContent, $composerLockContent, $includeDevs = true)
     {
+        $this->maxHhvmStatusForName = $this->travisRepo->getMaxHHVMStatusForNames();
         $this->dependencyGraph = $this->analyzer->analyzeComposerData($composerContent, $composerLockContent, null, $includeDevs);
         return $this;
     }
@@ -64,34 +70,58 @@ class GraphComposer
     {
         $vertex = $this->layoutVertex;
 
-        if($version) {
+        if ($version) {
             // Need to normalize version to find it in the database.
             $version = $this->versionParser->normalize($version);
-        }else{
+        } else {
             return $vertex;
         }
 
-        if(0 === stripos($name, 'symfony/')) {
+        if (0 === stripos($name, 'symfony/')) {
             $name = 'symfony/symfony';
         }
 
         /** @var PackageVersion $packageVersion */
         $packageVersion = $this->repository->getByPackageNameAndVersion($name, $version);
 
-        if(!$packageVersion) {
+        if (!$packageVersion) {
             return $vertex;
         }
 
-        switch($packageVersion->getTravisContent()->getHhvmStatus()) {
+        $hhvmStatus = $packageVersion->getTravisContent()->getHhvmStatus();
+        $maxHhvmStatus = isset($this->maxHhvmStatusForName[$name]) ? $this->maxHhvmStatusForName[$name] : HHVM::STATUS_UNKNOWN;
+
+        switch ($hhvmStatus) {
             case HHVM::STATUS_ALLOWED_FAILURE:
                 $vertex['fillcolor'] = '#ffa500';
+                $vertex['color'] = '#00ff00';
+                $vertex['penwidth'] = 3;
                 break;
             case HHVM::STATUS_SUPPORTED:
                 $vertex['fillcolor'] = '#00ff00';
                 break;
             case HHVM::STATUS_NONE:
                 $vertex['fillcolor'] = '#ff0000';
+
+                $vertex['color'] = '#ffa500';
+                $vertex['penwidth'] = 3;
                 break;
+        }
+
+        if ($maxHhvmStatus > $hhvmStatus) {
+            switch ($maxHhvmStatus) {
+                case HHVM::STATUS_ALLOWED_FAILURE:
+                    $vertex['color'] = '#00ff00';
+                    $vertex['penwidth'] = 3;
+                    break;
+                case HHVM::STATUS_SUPPORTED:
+                    // Cant be better
+                    break;
+                case HHVM::STATUS_NONE:
+                    $vertex['color'] = '#ffa500';
+                    $vertex['penwidth'] = 3;
+                    break;
+            }
         }
 
         return $vertex;
@@ -107,7 +137,7 @@ class GraphComposer
         $graph = new Graph();
 
         foreach ($this->dependencyGraph->getPackages() as $package) {
-            if($package->isPhpExtension() || $package->isPhpExtension() || $package->getName() == 'php') {
+            if ($package->isPhpExtension() || $package->isPhpExtension() || $package->getName() == 'php') {
                 continue;
             }
 
@@ -122,7 +152,7 @@ class GraphComposer
             $start->setLayout(array('label' => $label) + $this->getLayoutVertexForPackage($package->getName(), $package->getVersion()));
 
             foreach ($package->getOutEdges() as $requires) {
-                if($requires->getDestPackage()->isPhpExtension() || $requires->getDestPackage()->isPhpExtension() || $requires->getDestPackage()->getName() == 'php') {
+                if ($requires->getDestPackage()->isPhpExtension() || $requires->getDestPackage()->isPhpExtension() || $requires->getDestPackage()->getName() == 'php') {
                     continue;
                 }
 
