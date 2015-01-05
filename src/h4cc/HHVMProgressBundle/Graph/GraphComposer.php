@@ -94,17 +94,12 @@ class GraphComposer
         switch ($hhvmStatus) {
             case HHVM::STATUS_ALLOWED_FAILURE:
                 $vertex['fillcolor'] = '#ffa500';
-                $vertex['color'] = '#00ff00';
-                $vertex['penwidth'] = 3;
                 break;
             case HHVM::STATUS_SUPPORTED:
                 $vertex['fillcolor'] = '#00ff00';
                 break;
             case HHVM::STATUS_NONE:
                 $vertex['fillcolor'] = '#ff0000';
-
-                $vertex['color'] = '#ffa500';
-                $vertex['penwidth'] = 3;
                 break;
         }
 
