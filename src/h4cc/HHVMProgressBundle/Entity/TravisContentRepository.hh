@@ -74,7 +74,12 @@ class TravisContentRepository
 
         $query = $this->om->createNativeQuery($sql, $rsm);
 
+        // Init array with all possible hhvm status.
         $result = array();
+        foreach(HHVM::getAllHHVMStatus() as $status) {
+            $result[HHVM::getStringForStatus($status)] = 0;
+        }
+
         $total = 0;
         foreach($query->getResult() as $row) {
             $total += (int)$row['count'];

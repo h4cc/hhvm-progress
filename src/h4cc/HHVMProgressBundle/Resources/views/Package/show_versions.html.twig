@@ -50,37 +50,42 @@
 
     <p>More about this package on <a href="https://packagist.org/packages/{{ name }}">Packagist</a></p>
 
-    {% set versions = package.versions %}
-    {% if versions %}
-        <table class="table table-bordered">
-            <tr>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Version</th>
-                <th>HHVM&nbsp;Support
-                    <span id="icon_refresh" class="pull-right glyphicon glyphicon-refresh"></span>
-                    <span id="icon_wait" style="display: none;" class="pull-right glyphicon glyphicon-time"></span>
-                </th>
-            </tr>
-            {% for version in versions %}
-                {% set travis = version.travisContent %}
-                <tr class="{% if travis.hhvmStatus == 1 %}danger{%
-                endif %}{% if travis.hhvmStatus == 2 %}warning{% endif
-                %}{% if travis.hhvmStatus == 3 %}success{% endif %}">
-                    <td>{{ package.name }}</td>
-                    <td>{{ package.type }}</td>
-                    <td>{{ version.version }}</td>
-                    <td>
-                        {% if travis.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
-                        {% if travis.hhvmStatus == 2 %}<a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">Partially&nbsp;tested</a>{% endif %}
-                        {% if travis.hhvmStatus == 3 %}<a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">Tested</a>{% endif %}
-                    </td>
+    {% if package %}
+        {% set versions = package.versions %}
+        {% if versions %}
+            <table class="table table-bordered">
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Version</th>
+                    <th>HHVM&nbsp;Support
+                        <span id="icon_refresh" class="pull-right glyphicon glyphicon-refresh"></span>
+                        <span id="icon_wait" style="display: none;" class="pull-right glyphicon glyphicon-time"></span>
+                    </th>
                 </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No versions found :(</p>
+                {% for version in versions %}
+                    {% set travis = version.travisContent %}
+                    <tr class="{% if travis.hhvmStatus == 1 %}danger{% endif %}{% if travis.hhvmStatus == 2 %}warning{% endif %}{% if travis.hhvmStatus == 3 %}success{% endif %}">
+                        <td>{{ package.name }}</td>
+                        <td>{{ package.type }}</td>
+                        <td>{{ version.version }}</td>
+                        <td>
+                            {% if travis.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
+                            {% if travis.hhvmStatus == 2 %}<a
+                                href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
+                                    Partially&nbsp;tested</a>{% endif %}
+                            {% if travis.hhvmStatus == 3 %}<a
+                                href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">Tested</a>{% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No versions found :(</p>
+        {% endif %}
     {% endif %}
+
+    <p>Refresh this page using this icon: <span id="icon_refresh" class="glyphicon glyphicon-refresh"></span></p>
 
 {% endblock %}
 
@@ -114,12 +119,12 @@
                 $.ajax({
                     type: 'GET',
                     url: '{{ path('h4cc_hhvm_progress_packages_api_update', {"name": name}) }}'
-                }).done(function() {
+                }).done(function () {
                     // Reload current page
                     $.ajax({
                         url: "",
                         context: document.body,
-                        success: function(s){
+                        success: function (s) {
                             $(this).html(s);
                         }
                     });
