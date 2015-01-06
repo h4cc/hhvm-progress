@@ -70,6 +70,7 @@
                         <td>{{ package.type }}</td>
                         <td>{{ version.version }}</td>
                         <td>
+                            {% if travis.hhvmStatus == 0 %}Unknown{% endif %}
                             {% if travis.hhvmStatus == 1 %}Not&nbsp;tested{% endif %}
                             {% if travis.hhvmStatus == 2 %}<a
                                 href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
