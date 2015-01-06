@@ -55,13 +55,21 @@ class Package
     /**
      * @var
      *
-     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\PackageVersion", mappedBy="package")
+     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\PackageVersion", mappedBy="package", cascade={"remove"})
      * @ORM\OrderBy({"versionNormalized" = "DESC"})
      */
     private $versions;
 
+    /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent", mappedBy="package", cascade={"remove"})
+     */
+    private $travisContents;
+
     public function __construct() {
         $this->versions = new ArrayCollection();
+        $this->travisContents = new ArrayCollection();
     }
 
     /**
@@ -78,6 +86,22 @@ class Package
     public function setVersions($versions)
     {
         $this->versions = $versions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTravisContents()
+    {
+        return $this->travisContents;
+    }
+
+    /**
+     * @param mixed $travisContents
+     */
+    public function setTravisContents($travisContents)
+    {
+        $this->travisContents = $travisContents;
     }
 
     /**

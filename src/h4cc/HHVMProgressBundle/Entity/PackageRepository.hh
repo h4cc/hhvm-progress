@@ -19,6 +19,10 @@ class PackageRepository
         return $this->repo->findOneByName($name);
     }
 
+    public function all() : array<Package> {
+        return $this->repo->findAll();
+    }
+
     public function searchByNamePattern(string $pattern) : array<Package> {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('p');
@@ -34,6 +38,11 @@ class PackageRepository
 
     public function save(Package $package) {
         $this->om->persist($package);
+        $this->om->flush();
+    }
+
+    public function remove(Package $package) {
+        $this->om->remove($package);
         $this->om->flush();
     }
 }

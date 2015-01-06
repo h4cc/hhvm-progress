@@ -59,9 +59,13 @@ class PackageUpdateCommand extends ContainerAwareCommand
                 'doctrine/common',
             );
 
+            $this->removePackagesRemovedByPackagistByNames($packages);
+
         }else{
             $packagist = $this->getContainer()->get('h4cc_hhvm_progress.api.packagist');
             $packages = $packagist->getAllPackageNames();
+
+            $this->removePackagesRemovedByPackagistByNames($packages);
 
             // Shuffle packages as a update strategy :)
             shuffle($packages);
@@ -74,6 +78,13 @@ class PackageUpdateCommand extends ContainerAwareCommand
 
         $this->output->writeln('Updating Random Packages: '.count($packages));
         $this->updatedPackagesByNames($packages);
+    }
+
+    protected function removePackagesRemovedByPackagistByNames(array $names) {
+        /** @var \h4cc\HHVMProgressBundle\Services\PackageUpdater $updater */
+        $updater = $this->getContainer()->get('h4cc_hhvm_progress.package.updater');
+
+        $updater->syncPackageNames($names);
     }
 
     protected function updatedPackagesByNames(array $names) {
