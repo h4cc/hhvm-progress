@@ -23,6 +23,14 @@ class PackageRepository
         return $this->repo->findAll();
     }
 
+    public function allNames() : array<String> {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('p')->select('p.name')->getQuery();
+        $result = $query->getScalarResult();
+
+        return array_column($result, 'name');
+    }
+
     public function searchByNamePattern(string $pattern) : array<Package> {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('p');

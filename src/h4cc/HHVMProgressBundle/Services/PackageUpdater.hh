@@ -50,9 +50,7 @@ private LoggerInterface $logger;
 
     public function syncPackageNames(array $validNames)
     {
-        $packageNames = array_map(function(Package $package) : string {
-            return $package->getName();
-        }, $this->packages->all());
+        $packageNames = $this->packages->allNames();
 
         // Get all packages that we have in our database, but are unknown for packagist
         $removedNames = array_diff($packageNames, $validNames);
