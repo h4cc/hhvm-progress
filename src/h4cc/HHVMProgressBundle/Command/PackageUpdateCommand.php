@@ -18,7 +18,9 @@ class PackageUpdateCommand extends ContainerAwareCommand
         $this
             ->setName('h4cc:hhvm:package:update')
             ->setDescription('Updates the index')
-            ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 200);
+            ->addOption('number-of-packages', 'p', InputOption::VALUE_OPTIONAL, 'Number of Packages to update. "0" to disable.', 200)
+            ->addOption('local', null, InputOption::VALUE_NONE, 'Only test a fixed list of local packages');
+        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -26,9 +28,13 @@ class PackageUpdateCommand extends ContainerAwareCommand
         $this->output = $output;
         $this->input = $input;
 
-        $this->updatePackagesFromPackagistFeed();
-        $this->updatePackagesAtRandom();
+        $this->local = $this->input->getOption('local');
 
+        if(!$this->local) {
+            $this->updatePackagesFromPackagistFeed();
+        }
+
+        $this->updatePackagesAtRandom();
     }
 
     protected function updatePackagesFromPackagistFeed()
@@ -43,9 +49,7 @@ class PackageUpdateCommand extends ContainerAwareCommand
 
     protected function updatePackagesAtRandom()
     {
-        $local = false;
-
-        if($local) {
+        if($this->local) {
             // Packages for testing all three possible hhvm status.
             $packages = array(
                 'symfony/symfony',
