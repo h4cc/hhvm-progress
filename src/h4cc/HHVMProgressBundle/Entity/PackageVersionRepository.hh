@@ -25,7 +25,7 @@ class PackageVersionRepository
         return $this->repo->findOneBy(['package' => $package, 'version' => $version]);
     }
 
-    public function getByPackageNameAndVersion(string $packageName, string $versionNormalized) : ?PackageVersion
+    public function getByPackageNameAndVersion(string $packageName, string $version) : ?PackageVersion
     {
         $query = $this->repo->createQueryBuilder('pv');
 
@@ -33,10 +33,13 @@ class PackageVersionRepository
         $query->join('pv.package', 'p');
 
         $query->where('p.name = :name');
-        $query->andWhere('pv.versionNormalized = :version');
+        $query->andWhere($query->expr()->orX(
+            $query->expr()->eq('pv.version', ':version'),
+            $query->expr()->like('pv.versionNormalized', ':version')
+        ));
 
         $query->setParameter('name', $packageName);
-        $query->setParameter('version', $versionNormalized);
+        $query->setParameter('version', $version);
 
         return $query->getQuery()->getOneOrNullResult();
     }

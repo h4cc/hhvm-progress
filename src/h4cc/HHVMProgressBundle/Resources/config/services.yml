@@ -28,6 +28,22 @@ services:
         calls:
           - [setLogger, [@logger]]
 
+    h4cc_hhvm_progress.replaces:
+        class: h4cc\HHVMProgressBundle\Services\Replaces
+        arguments:
+          - %kernel.cache_dir%
+          - @h4cc_hhvm_progress.repos.package_version
+        calls:
+          - [setLogger, [@logger]]
+
+    h4cc_hhvm_progress.replaces.updater:
+        class: h4cc\HHVMProgressBundle\Services\ReplacesUpdater
+        arguments:
+          - @h4cc_hhvm_progress.api.packagist
+          - %kernel.cache_dir%
+        calls:
+          - [setLogger, [@logger]]
+
     #h4cc_hhvm_progress.package.stats:
     #    class: h4cc\HHVMProgressBundle\Services\PackageStats
     #    arguments:
@@ -128,6 +144,7 @@ services:
         arguments:
           - @h4cc_hhvm_progress.repos.package_version
           - @h4cc_hhvm_progress.repos.travis_content
+          - @h4cc_hhvm_progress.replaces
 
 #--- Twig
 

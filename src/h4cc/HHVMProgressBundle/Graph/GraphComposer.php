@@ -10,6 +10,7 @@ use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\Entity\PackageVersionRepository;
 use h4cc\HHVMProgressBundle\Entity\TravisContentRepository;
 use h4cc\HHVMProgressBundle\HHVM;
+use h4cc\HHVMProgressBundle\Services\Replaces;
 use JMS\Composer\DependencyAnalyzer;
 
 class GraphComposer
@@ -48,14 +49,17 @@ class GraphComposer
 
     private $analyzer;
 
+    private $replaces;
+
     private $maxHhvmStatusForName = [];
 
-    public function __construct(PackageVersionRepository $repository, TravisContentRepository $repoTravis)
+    public function __construct(PackageVersionRepository $repository, TravisContentRepository $repoTravis, Replaces $replaces)
     {
         $this->repository = $repository;
         $this->travisRepo = $repoTravis;
-        $this->versionParser = new VersionParser();
+        $this->replaces = $replaces;
 
+        $this->versionParser = new VersionParser();
         $this->analyzer = new DependencyAnalyzer();
     }
 
@@ -70,25 +74,27 @@ class GraphComposer
     {
         $vertex = $this->layoutVertex;
 
-        if ($version) {
-            // Need to normalize version to find it in the database.
-            $version = $this->versionParser->normalize($version);
-        } else {
+        if (!$version) {
             return $vertex;
-        }
-
-        if (0 === stripos($name, 'symfony/')) {
-            $name = 'symfony/symfony';
         }
 
         /** @var PackageVersion $packageVersion */
         $packageVersion = $this->repository->getByPackageNameAndVersion($name, $version);
-
         if (!$packageVersion) {
             return $vertex;
         }
 
         $hhvmStatus = $packageVersion->getTravisContent()->getHhvmStatus();
+
+        $replacingVersion = $this->replaces->findReplacingVersion($name, $version);
+
+        if($replacingVersion && !$packageVersion->getTravisContent()->getFileExists()) {
+            if($replacingVersion->getTravisContent()->getHhvmStatus() > $hhvmStatus) {
+                // Using higher hhvm status from replacing package if current package has no travis.yml file.
+                $hhvmStatus = $replacingVersion->getTravisContent()->getHhvmStatus();
+            }
+        }
+
         $maxHhvmStatus = isset($this->maxHhvmStatusForName[$name]) ? $this->maxHhvmStatusForName[$name] : HHVM::STATUS_UNKNOWN;
 
         switch ($hhvmStatus) {

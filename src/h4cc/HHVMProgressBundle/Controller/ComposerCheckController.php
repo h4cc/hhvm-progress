@@ -71,17 +71,28 @@ class ComposerCheckController extends Controller
 
             $packageName = $package['name'];
             $package['hint'] = '';
-            if (0 === stripos($packageName, 'symfony/')) {
-                $packageName = 'symfony/symfony';
-                $package['hint'] = 'Used HHVM status from symfony/symfony instead.';
-            }
 
             $version = $versionsRepo->getByPackageNameAndVersion($packageName, $package['version']);
+
+            $higherReplacingVersion = $this->get('h4cc_hhvm_progress.replaces')->findReplacingVersion($packageName, $package['version']);
+            if($higherReplacingVersion) {
+                $package['hint'] = 'Replacing Package availablabe: '.$higherReplacingVersion->getPackage()->getName().'@'.$higherReplacingVersion->getVersion();
+            }
 
             if (!$version) {
                 $package['hhvm_status'] = HHVM::STATUS_UNKNOWN;
             } else {
                 $package['hhvm_status'] = $version->getTravisContent()->getHhvmStatus();
+
+                if(!$version->getTravisContent()->getFileExists()) {
+                    if($higherReplacingVersion->getTravisContent()->getHhvmStatus() >  $version->getTravisContent()->getHhvmStatus()) {
+                        // The current package does not have a travis file,
+                        // but a replacing package has one. So use the hhvm state of the replacing one.
+
+                        $package['hhvm_status'] = $higherReplacingVersion->getTravisContent()->getHhvmStatus();
+                        $package['hint'] = 'Using HHVM Status from Package '.$higherReplacingVersion->getPackage()->getName().' instead.';
+                    }
+                }
             }
             $package['hhvm_status_max'] = $package['hhvm_status'];
             if (isset($hhvmMaxStatus[$packageName])) {
@@ -118,7 +129,8 @@ class ComposerCheckController extends Controller
             $packages[$package['name']] = array(
                 'name' => $package['name'],
                 'type' => isset($package['type']) ? $package['type'] : '',
-                'version' => $versionParser->normalize($package['version']),
+                'version' => $package['version'],
+                'versionNormalized' => $versionParser->normalize($package['version']),
                 'description' => isset($package['description']) ? $package['description'] : '',
                 'dev' => false,
             );
@@ -128,7 +140,8 @@ class ComposerCheckController extends Controller
             $packages[$package['name']] = array(
                 'name' => $package['name'],
                 'type' => isset($package['type']) ? $package['type'] : '',
-                'version' => $versionParser->normalize($package['version']),
+                'version' => $package['version'],
+                'versionNormalized' => $versionParser->normalize($package['version']),
                 'description' => isset($package['description']) ? $package['description'] : '',
                 'dev' => true,
             );
