@@ -52,6 +52,7 @@ class ReplacesUpdater
     {
         $replacedPackages = [];
 
+        clearstatcache();
         if(file_exists($this->cachePathSerialized)) {
             $data = unserialize(file_get_contents($this->cachePathSerialized));
             foreach($data as $package) {

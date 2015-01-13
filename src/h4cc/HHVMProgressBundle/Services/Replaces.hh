@@ -67,10 +67,6 @@ class Replaces
 
     private function getReplacesMap()
     {
-        if(!file_exists($this->cachePathPHP)) {
-            $this->createReplacesMapFromSerializedFile();
-        }
-
         clearstatcache();
         if(file_exists($this->cachePathPHP)) {
             $cache = include($this->cachePathPHP);
