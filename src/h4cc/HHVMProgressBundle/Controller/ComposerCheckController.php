@@ -84,7 +84,7 @@ class ComposerCheckController extends Controller
             } else {
                 $package['hhvm_status'] = $version->getTravisContent()->getHhvmStatus();
 
-                if(!$version->getTravisContent()->getFileExists()) {
+                if($higherReplacingVersion && !$version->getTravisContent()->getFileExists()) {
                     if($higherReplacingVersion->getTravisContent()->getHhvmStatus() >  $version->getTravisContent()->getHhvmStatus()) {
                         // The current package does not have a travis file,
                         // but a replacing package has one. So use the hhvm state of the replacing one.
