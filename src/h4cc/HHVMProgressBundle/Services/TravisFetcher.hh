@@ -105,7 +105,7 @@ class TravisFetcher
                 throw new GithubRateLimitException("Reached Github Limit", 0, $e);
             }
 
-            if('Not Found' == $e->getMessage() || 0 === stripos($e->getMessage(), 'No commit found')) {
+            if('Not Found' == $e->getMessage() || 0 === stripos($e->getMessage(), 'No commit found' || 0 === stripos($e->getMessage(), 'This repository is empty')) {
                 $this->logger->info($e->getMessage());
             }else{
                 $this->logger->warning($e->getMessage());
