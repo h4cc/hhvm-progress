@@ -35,7 +35,10 @@ class TravisContentRepository
 
         $query->setParameter(1, $hhvmStatus);
 
-        return $query->getQuery()->getResult();
+        return $query
+            ->getQuery()
+            ->useResultCache(true, 3600, __CLASS__.':'.__METHOD__.':hhvmStatus:'.$hhvmStatus)
+            ->getResult();
     }
 
     public function getMaxHHVMStatusForNames() {

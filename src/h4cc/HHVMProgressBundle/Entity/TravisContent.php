@@ -27,7 +27,7 @@ class TravisContent
     /**
      * @var integer
      *
-     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package")
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="travisContents")
      */
     private $package;
 
