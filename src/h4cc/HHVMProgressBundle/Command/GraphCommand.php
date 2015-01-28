@@ -260,10 +260,10 @@ class GraphCommand extends ContainerAwareCommand
         $composerContent = file_get_contents($path . '/composer.json');
         $composerLockContent = file_get_contents($path . '/composer.lock');
 
-        $graph = new GraphComposer($composerContent, $composerLockContent, $dev);
-        $graph->setPackageVersionRepo($this->getContainer()->get('h4cc_hhvm_progress.repos.package_version'));
+        $graphComposer = $this->getContainer()->get('h4cc_hhvm_progress.graph_composer');
+        $graphComposer->analyze($composerContent, $composerLockContent, $dev);
 
-        $image = $graph->getImage();
+        $image = $graphComposer->getImage();
 
         if (!$image) {
             throw new \RuntimeException("Could not generate composer graph image.");

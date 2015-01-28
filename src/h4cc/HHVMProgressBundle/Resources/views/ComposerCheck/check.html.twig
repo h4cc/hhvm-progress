@@ -26,8 +26,7 @@
         </tr>
         {% for version in result %}
             <tr class="
-        {% if version.hhvm_status == -2 %}active{% endif %}
-        {% if version.hhvm_status == -1 %}success{% endif %}
+        {% if version.hhvm_status == 0 %}active{% endif %}
         {% if version.hhvm_status == 1 %}danger{% endif %}
         {% if version.hhvm_status == 2 %}warning{% endif %}
         {% if version.hhvm_status == 3 %}success{% endif %}
@@ -51,8 +50,7 @@
                     <small>{{ version.description }}</small></td>
                 <td>{{ version.version|replace({'9999999.9999999-dev': 'x-dev'})|replace({'9999999-dev': 'dev-master'}) }}<br/>{{ version.type }}</td>
                 <td>
-                    {% if version.hhvm_status == -2 %}Unknown&nbsp;status{% endif %}
-                    {% if version.hhvm_status == -1 %}Not&nbsp;a PHP&nbsp;library{% endif %}
+                    {% if version.hhvm_status == 0 %}Unknown&nbsp;status{% endif %}
                     {% if version.hhvm_status == 1 %}Not&nbsp;tested{% endif %}
                     {% if version.hhvm_status == 2 %}Tested&nbsp;as allowed&nbsp;failure{% endif %}
                     {% if version.hhvm_status == 3 %}Tested{% endif %}

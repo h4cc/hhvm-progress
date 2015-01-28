@@ -8,27 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
  * PackageVersion
  *
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(name="name_version_unique",columns={"name", "version"})
+ *  @ORM\UniqueConstraint(name="name_version_unique",columns={"package_id", "version"})
  * })
  * @ORM\Entity()
  */
 class PackageVersion
 {
-    /** HHVM is not in travis.yml */
-    const HHVM_STATUS_NONE = 1;
-
-    /** HHVM is a allowed failure build. */
-    const HHVM_STATUS_ALLOWED_FAILURE = 2;
-
-    /** HHVM is a full build. */
-    const HHVM_STATUS_SUPPORTED = 3;
-
-    /** Not a PHP build. */
-    const HHVM_STATUS_NO_PHP = -1;
-
-    /** Could not determine status, like missing travis.yml */
-    const HHVM_STATUS_UNKNOWN = -2;
-
     /**
      * @var integer
      *
@@ -39,18 +24,18 @@ class PackageVersion
     private $id;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="versions")
      */
-    private $name;
+    private $package;
 
     /**
-     * @var string
+     * @var
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent")
      */
-    private $description = '';
+    private $travisContent;
 
     /**
      * @var string
@@ -62,58 +47,58 @@ class PackageVersion
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\Column(name="versionNormalized", type="string", length=255)
      */
-    private $type;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="hhvm_status", type="integer")
-     */
-    private $hhvm_status;
+    private $versionNormalized;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="git_reference", type="string", length=255)
+     * @ORM\Column(name="source_reference", type="string", length=255)
      */
-    private $git_reference;
+    private $sourceReference;
+
+    public function __construct(Package $package, TravisContent $travisContent) {
+        $this->setPackage($package);
+        $this->setTravisContent($travisContent);
+    }
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="travis_content", type="text")
+     * @return int
      */
-    private $travis_content;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="time", type="datetime")
-     */
-    private $time;
-
-    /**
-     * Returns a list of all possible hhvm status.
-     *
-     * @return array
-     */
-    public static function getAllHHVMStatus()
+    public function getPackage()
     {
-        return array(
-            self::HHVM_STATUS_NONE,
-            self::HHVM_STATUS_ALLOWED_FAILURE,
-            self::HHVM_STATUS_NO_PHP,
-            self::HHVM_STATUS_SUPPORTED,
-            self::HHVM_STATUS_UNKNOWN,
-        );
+        return $this->package;
+    }
+
+    /**
+     * @param int $package
+     */
+    public function setPackage(Package $package)
+    {
+        $this->package = $package;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTravisContent()
+    {
+        return $this->travisContent;
+    }
+
+    /**
+     * @param mixed $travisContent
+     */
+    public function setTravisContent(TravisContent $travisContent)
+    {
+        $this->travisContent = $travisContent;
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -121,48 +106,10 @@ class PackageVersion
     }
 
     /**
-     * Set name
-     *
-     * @param string $name
-     * @return PackageVersion
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string 
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
      * Set version
      *
      * @param string $version
+     *
      * @return PackageVersion
      */
     public function setVersion($version)
@@ -175,7 +122,7 @@ class PackageVersion
     /**
      * Get version
      *
-     * @return string 
+     * @return string
      */
     public function getVersion()
     {
@@ -183,106 +130,44 @@ class PackageVersion
     }
 
     /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set hhvmStatus
+     * Set versionNormalized
      *
-     * @param integer $hhvmStatus
+     * @param string $versionNormalized
+     *
      * @return PackageVersion
      */
-    public function setHhvmStatus($hhvmStatus)
+    public function setVersionNormalized($versionNormalized)
     {
-        $this->hhvm_status = $hhvmStatus;
+        $this->versionNormalized = $versionNormalized;
 
         return $this;
     }
 
     /**
-     * Get hhvmStatus
+     * Get versionNormalized
      *
-     * @return integer 
-     */
-    public function getHhvmStatus()
-    {
-        return $this->hhvm_status;
-    }
-
-    public function getHhvmStatusAsString()
-    {
-        switch($this->hhvm_status) {
-            case static::HHVM_STATUS_ALLOWED_FAILURE:
-                return 'partial_tested';
-            case static::HHVM_STATUS_NO_PHP:
-                return 'not_php';
-            case static::HHVM_STATUS_NONE:
-                return 'not_tested';
-            case static::HHVM_STATUS_SUPPORTED:
-                return 'tested';
-            case static::HHVM_STATUS_UNKNOWN:
-                return 'unknown';
-        }
-        throw new \RuntimeException("Unknown HHVM status: ".$this->hhvm_status);
-    }
-
-    /**
-     * @param string $git_reference
-     */
-    public function setGitReference($git_reference)
-    {
-        $this->git_reference = $git_reference;
-    }
-
-    /**
      * @return string
      */
-    public function getGitReference()
+    public function getVersionNormalized()
     {
-        return $this->git_reference;
+        return $this->versionNormalized;
+    }
+
+    public function setSourceReference($sourceReference)
+    {
+        $this->sourceReference = $sourceReference;
+
+        return $this;
     }
 
     /**
-     * @param string $travis_content
-     */
-    public function setTravisContent($travis_content)
-    {
-        $this->travis_content = $travis_content;
-    }
-
-    /**
+     * Get sorceReference
+     *
      * @return string
      */
-    public function getTravisContent()
+    public function getSourceReference()
     {
-        return $this->travis_content;
-    }
-
-    /**
-     * @param \DateTime $time
-     */
-    public function setTime(\DateTime $time)
-    {
-        $this->time = $time;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getTime()
-    {
-        return $this->time;
+        return $this->sourceReference;
     }
 }
+

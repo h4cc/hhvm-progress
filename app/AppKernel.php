@@ -18,6 +18,10 @@ class AppKernel extends Kernel
             //new Lsw\MemcacheBundle\LswMemcacheBundle(),
             new \Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
             new Ob\HighchartsBundle\ObHighchartsBundle(),
+            new RaulFraile\Bundle\LadybugBundle\RaulFraileLadybugBundle(),
+            new Aequasi\Bundle\CacheBundle\AequasiCacheBundle(),
+            new Silpion\LoggerExtraBundle\SilpionLoggerExtraBundle(),
+
             new h4cc\HHVMProgressBundle\h4ccHHVMProgressBundle(),
         );
 

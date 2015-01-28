@@ -9,6 +9,7 @@ class PageController extends Controller
 {
     public function indexAction()
     {
+
         $stats = $this->getCachedStats();
 
         if(0 == $stats['total']) {
@@ -17,9 +18,10 @@ class PageController extends Controller
         }
 
         // Calculate percentages of progress bars.
-        $stats['supported_percent'] = max(5, $stats['supported'] / $stats['total'] * 100);
-        $stats['allowed_failure_percent'] = max(5, $stats['allowed_failure'] / $stats['total'] * 100);
-        $stats['not_supported_percent'] = 100 - $stats['supported_percent'] - $stats['allowed_failure_percent'];
+        $stats['unknown_percent'] = max(5, $stats['unknown'] / $stats['total'] * 100);
+        $stats['tested_percent'] = max(5, $stats['tested'] / $stats['total'] * 100);
+        $stats['partial_percent'] = max(5, $stats['partial'] / $stats['total'] * 100);
+        $stats['not_tested_percent'] = 100 - $stats['tested_percent'] - $stats['partial_percent'] - $stats['unknown_percent'];
 
         return $this->render('h4ccHHVMProgressBundle:Page:index.html.twig', array('stats' => $stats));
     }
@@ -36,13 +38,14 @@ class PageController extends Controller
         return $response;
     }
 
-    private function getCachedStats() {
-        $cache = $this->get('memcache.default');
+    private function getCachedStats()
+    {
+        $cache = $this->get('memcache');
 
         $stats = $cache->fetch('stats');
-
         if(!$stats) {
-            $stats = $this->get('h4cc_hhvm_progress.package.stats')->getStatsByHHVMState();
+
+            $stats = $this->get('h4cc_hhvm_progress.repos.travis_content')->getMaxHHVMStatusCount();
 
             $cache->save('stats', $stats, 60);
         }

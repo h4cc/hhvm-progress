@@ -3,11 +3,16 @@ parameters:
 
 services:
 
+    memcache:
+        alias: aequasi_cache.instance.default
+
 #--- API
 
     h4cc_hhvm_progress.api.packagist:
         class: h4cc\HHVMProgressBundle\Services\PackagistApi
 
+    h4cc_hhvm_progress.feeds.packagist:
+        class: h4cc\HHVMProgressBundle\Services\PackagistFeeds
 
 #--- Packages
 
@@ -15,32 +20,65 @@ services:
         class: h4cc\HHVMProgressBundle\Services\PackageUpdater
         arguments:
           - @h4cc_hhvm_progress.api.packagist
+          - @h4cc_hhvm_progress.repos.package
           - @h4cc_hhvm_progress.repos.package_version
+          - @h4cc_hhvm_progress.repos.travis_content
           - @h4cc_hhvm_progress.travis_fetcher
-          - @logger
+          - @h4cc_hhvm_progress.travis_parser
+        calls:
+          - [setLogger, [@logger]]
 
-    h4cc_hhvm_progress.package.stats:
-        class: h4cc\HHVMProgressBundle\Services\PackageStats
+    h4cc_hhvm_progress.replaces:
+        class: h4cc\HHVMProgressBundle\Services\Replaces
         arguments:
+          - %kernel.cache_dir%
           - @h4cc_hhvm_progress.repos.package_version
-          - @h4cc_hhvm_progress.repos.package_stats
+        calls:
+          - [setLogger, [@logger]]
+
+    h4cc_hhvm_progress.replaces.updater:
+        class: h4cc\HHVMProgressBundle\Services\ReplacesUpdater
+        arguments:
+          - @h4cc_hhvm_progress.api.packagist
+          - %kernel.cache_dir%
+        calls:
+          - [setLogger, [@logger]]
+
+    #h4cc_hhvm_progress.package.stats:
+    #    class: h4cc\HHVMProgressBundle\Services\PackageStats
+    #    arguments:
+    #      - @h4cc_hhvm_progress.repos.package_version
+    #      - @h4cc_hhvm_progress.repos.package_stats
 
 
-#--- Travis Fetcher
+#--- Travis
 
     h4cc_hhvm_progress.travis_fetcher:
         class: h4cc\HHVMProgressBundle\Services\TravisFetcher
         arguments:
           - @logger
-          - @h4cc_hhvm_progress.travis_fetcher.github
-
-    h4cc_hhvm_progress.travis_fetcher.github:
-        class: h4cc\HHVMProgressBundle\Services\TravisFetcher\Github
-        arguments:
           - @h4cc_hhvm_progress.github_client
+          - %github_tokens%
+
+    h4cc_hhvm_progress.travis_parser:
+        class: h4cc\HHVMProgressBundle\Services\TravisParser
+        calls:
+          - [setLogger, [@logger]]
+
+    h4cc_hhvm_progress.travis_status_updater:
+        class: h4cc\HHVMProgressBundle\Services\TravisStatusUpdater
+        arguments:
+          - @h4cc_hhvm_progress.repos.travis_content
+          - @h4cc_hhvm_progress.travis_parser
           - @logger
 
 #--- Repos ---
+
+    h4cc_hhvm_progress.repos.package:
+        class: h4cc\HHVMProgressBundle\Entity\PackageRepository
+        arguments:
+          - @h4cc_hhvm_progress.doctrine_repo.package
+          - @h4cc_hhvm_progress.orm.entity_manager
 
     h4cc_hhvm_progress.repos.package_version:
         class: h4cc\HHVMProgressBundle\Entity\PackageVersionRepository
@@ -48,31 +86,49 @@ services:
           - @h4cc_hhvm_progress.doctrine_repo.package_version
           - @h4cc_hhvm_progress.orm.entity_manager
 
-    h4cc_hhvm_progress.repos.package_stats:
-        class: h4cc\HHVMProgressBundle\Entity\PackageStatsRepository
+    h4cc_hhvm_progress.repos.travis_content:
+        class: h4cc\HHVMProgressBundle\Entity\TravisContentRepository
         arguments:
-          - @h4cc_hhvm_progress.doctrine_repo.package_stats
+          - @h4cc_hhvm_progress.doctrine_repo.travis_content
           - @h4cc_hhvm_progress.orm.entity_manager
+
+    #h4cc_hhvm_progress.repos.package_stats:
+    #    class: h4cc\HHVMProgressBundle\Entity\PackageStatsRepository
+    #    arguments:
+    #      - @h4cc_hhvm_progress.doctrine_repo.package_stats
+    #      - @h4cc_hhvm_progress.orm.entity_manager
 
 #--- Internals
 
     h4cc_hhvm_progress.github_client:
         class: Github\Client
-        calls:
-          - [authenticate, [%github_token%, "http_token"]]
 
+    h4cc_hhvm_progress.doctrine_repo.package:
+        public: false
+        class: Doctrine\ORM\EntityRepository
+        factory_service: h4cc_hhvm_progress.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - h4cc\HHVMProgressBundle\Entity\Package
 
-    # Internal Doctrine Repo.
     h4cc_hhvm_progress.doctrine_repo.package_version:
-        #public: false
+        public: false
         class: Doctrine\ORM\EntityRepository
         factory_service: h4cc_hhvm_progress.orm.entity_manager
         factory_method: getRepository
         arguments:
           - h4cc\HHVMProgressBundle\Entity\PackageVersion
 
+    h4cc_hhvm_progress.doctrine_repo.travis_content:
+        public: false
+        class: Doctrine\ORM\EntityRepository
+        factory_service: h4cc_hhvm_progress.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - h4cc\HHVMProgressBundle\Entity\TravisContent
+
     h4cc_hhvm_progress.doctrine_repo.package_stats:
-        #public: false
+        public: false
         class: Doctrine\ORM\EntityRepository
         factory_service: h4cc_hhvm_progress.orm.entity_manager
         factory_method: getRepository
@@ -82,6 +138,13 @@ services:
     # Internal Alias for the entity manager we are using.
     h4cc_hhvm_progress.orm.entity_manager:
         alias: "doctrine.orm.entity_manager"
+
+    h4cc_hhvm_progress.graph_composer:
+        class: h4cc\HHVMProgressBundle\Graph\GraphComposer
+        arguments:
+          - @h4cc_hhvm_progress.repos.package_version
+          - @h4cc_hhvm_progress.repos.travis_content
+          - @h4cc_hhvm_progress.replaces
 
 #--- Twig
 

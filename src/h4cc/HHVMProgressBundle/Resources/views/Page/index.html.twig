@@ -11,33 +11,42 @@
     </p>
 
     <div class="progress">
-        <div class="progress-bar progress-bar-success" style="width: {{ stats.supported_percent }}%;">
+        <div class="progress-bar progress-bar-success" style="width: {{ stats.tested_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_supporting') }}">
-                    {{ stats.supported }}
+                    {{ stats.tested }}
                 </a>
             </span>
         </div>
         <div class="progress-bar progress-bar-warning"
-             style="width: {{ stats.allowed_failure_percent }}%;">
+             style="width: {{ stats.partial_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_allowed_failure') }}">
-                    {{ stats.allowed_failure }}
+                    {{ stats.partial }}
                 </a>
             </span>
         </div>
         <div class="progress-bar progress-bar-danger"
-             style="width: {{ stats.not_supported_percent }}%;">
+             style="width: {{ stats.not_tested_percent }}%;">
             <span>
                 <a href="{{ path('h4cc_hhvm_progress_packages_needing_help') }}">
-                    {{ stats.not_supported }}
+                    {{ stats.not_tested }}
                 </a>
+            </span>
+        </div>
+        <div class="progress-bar progress-bar-default"
+             style="width: {{ stats.unknown_percent }}%;">
+            <span>
+                   {{ stats.unknown }}
             </span>
         </div>
     </div>
 
     <p class="lead">
-        Green is <span class="hhvm_supported">tested against HHVM</span>, orange is <span class="hhvm_allowed_failure">partially tested against HHVM</span> and red is <span class="hhvm_not_supported">not using HHVM</span> to run their tests.
+        Green is <span class="hhvm_supported">tested against HHVM</span>,
+        orange is <span class="hhvm_allowed_failure">partially tested against HHVM</span> and
+        red is <span class="hhvm_not_supported">not using HHVM</span> to run their tests.
+        Gray is <span class="hhvm_unknown">not using Travis</span> at all.
     </p>
 </div>
 

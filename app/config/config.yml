@@ -60,6 +60,21 @@ knp_paginator:
     template:
         pagination: KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig
 
+
+aequasi_cache:
+    session:
+        enabled: true
+        instance: default
+        prefix: "hhvm_session_"
+        ttl: 7200
+    instances:
+        default:
+          persistent: true # Boolean or persistent_id
+          namespace: hhvm_
+          type: memcached
+          hosts:
+              - { host: localhost, port: 11211 }
+
 #lsw_memcache:
 #    session:
 #        client: default
@@ -80,3 +95,16 @@ doctrine_cache:
             aliases:
                 - memcache.default
 
+silpion_logger_extra:
+    # If a random request_id should be added to the [extra] section of each log message.
+    request_id:           true
+    # If a salted SHA1 of the session_id should be added to the [extra] section of each log message.
+    session_id:           true
+    # A list of "key: value" entries that will be set in the [extra] section of each log message (Overwrites existing keys!).
+    #additions:
+    #    server_id: 42
+    logger:
+        # Will create a log entry on each incoming request.
+        on_request:           true
+        # Will create a log entry on each outgoing response.
+        on_response:          true

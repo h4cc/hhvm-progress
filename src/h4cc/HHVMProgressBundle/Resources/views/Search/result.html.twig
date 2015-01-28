@@ -1,4 +1,3 @@
-
 {% extends "base.html.twig" %}
 
 {% block page_title %}Search for packages - {{ parent() }}{% endblock %}
@@ -8,8 +7,7 @@
 
     {% include 'h4ccHHVMProgressBundle:includes:search_form.html.twig' %}
 
-    {% if pagination.count %}
-
+    {% if show_result %}
         <h2>Result:</h2>
 
         {% include 'h4ccHHVMProgressBundle:includes:package_version_table.html.twig' with {'packages': pagination} %}

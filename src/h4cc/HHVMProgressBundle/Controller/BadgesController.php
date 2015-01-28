@@ -4,33 +4,21 @@ namespace h4cc\HHVMProgressBundle\Controller;
 
 use Composer\Package\Version\VersionParser;
 use h4cc\HHVMProgressBundle\Entity\PackageVersion;
+use h4cc\HHVMProgressBundle\HHVM;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class BadgesController extends Controller
 {
     public function jsonAction($name, Request $request)
     {
         $branch = $request->get('branch', 'dev-master');
-
         $packageVersion = $this->getPackageVersion($name, $branch);
 
-        $hhvmStatusString = 'unknown';
-        if($packageVersion) {
-            switch($packageVersion->getHhvmStatus()) {
-                case PackageVersion::HHVM_STATUS_SUPPORTED:
-                    $hhvmStatusString = 'tested';
-                    break;
-                case PackageVersion::HHVM_STATUS_NONE:
-                    $hhvmStatusString = 'not_tested';
-                    break;
-                case PackageVersion::HHVM_STATUS_ALLOWED_FAILURE:
-                    $hhvmStatusString = 'partial';
-                    break;
-            }
-        }
+        $hhvmStatusString = HHVM::getStringForStatus($packageVersion->getTravisContent()->getHhvmStatus());
 
         $response = new JsonResponse(array('hhvm_status' => $hhvmStatusString));
         $response->headers->set('Cache-Control', sprintf('public, maxage=%s, s-maxage=%s', 3600, 3600));
@@ -42,22 +30,13 @@ class BadgesController extends Controller
     {
         $branch = $request->get('branch', 'dev-master');
 
-        $packageVersion = $this->getPackageVersion($name, $branch);
-
-        $badgeFile = 'unknown';
-        if($packageVersion) {
-            switch($packageVersion->getHhvmStatus()) {
-                case PackageVersion::HHVM_STATUS_SUPPORTED:
-                    $badgeFile = 'tested';
-                    break;
-                case PackageVersion::HHVM_STATUS_NONE:
-                    $badgeFile = 'not_tested';
-                    break;
-                case PackageVersion::HHVM_STATUS_ALLOWED_FAILURE:
-                    $badgeFile = 'partial';
-                    break;
-            }
+        try {
+            $packageVersion = $this->getPackageVersion($name, $branch);
+        }catch(NotFoundHttpException $e) {
+            return new Response('', 404);
         }
+
+        $badgeFile = HHVM::getStringForStatus($packageVersion->getTravisContent()->getHhvmStatus());
 
         if('svg' == $type) {
             $response = new Response(file_get_contents(__DIR__.'/../Resources/badges/hhvm_'.$badgeFile.'.svg'));
@@ -74,13 +53,25 @@ class BadgesController extends Controller
 
     private function getPackageVersion($name, $branch)
     {
-        /** @var \h4cc\HHVMProgressBundle\Entity\PackageVersionRepository $repo */
-        $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
+        $package = $repo = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
 
-        // Move this instance to a service.
+        if(!$package) {
+            throw new NotFoundHttpException();
+        }
+
+        $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
         $versionParser = new VersionParser();
 
-        // Move this logic also to a service?
-        return $repo->get($name, $versionParser->normalize($branch));
+        $version = $repo->getByPackageAndVersion($package, $versionParser->normalize($branch));
+        if($version) {
+            return $version;
+        }
+
+        $version = $repo->getByPackageAndVersion($package, $branch);
+        if(!$version) {
+            throw new NotFoundHttpException();
+        }
+
+        return $version;
     }
 }

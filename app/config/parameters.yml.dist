@@ -6,7 +6,8 @@ parameters:
     database_user:     root
     database_password: ~
 
-    github_token:      ~
+    github_tokens:
+        - ~
 
     php_binary:        php
 
