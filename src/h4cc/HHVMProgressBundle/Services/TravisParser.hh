@@ -31,6 +31,11 @@ class TravisParser
 
         try {
             $data = Yaml::parse($content);
+
+            if(is_null($data)) {
+                throw new \RuntimeException('Empty Travis content parsed.');
+            }
+
         }catch(\Exception $e) {
             $this->logger->info($e->getMessage());
             $this->logger->debug($e);
