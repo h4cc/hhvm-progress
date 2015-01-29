@@ -58,10 +58,7 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Version</th>
-                    <th>HHVM&nbsp;Support
-                        <span id="icon_refresh" class="pull-right glyphicon glyphicon-refresh"></span>
-                        <span id="icon_wait" style="display: none;" class="pull-right glyphicon glyphicon-time"></span>
-                    </th>
+                    <th>HHVM&nbsp;Support</th>
                 </tr>
                 {% for version in versions %}
                     {% set travis = version.travisContent %}
@@ -86,7 +83,11 @@
         {% endif %}
     {% endif %}
 
-    <p>Refresh this page using this icon: <span id="icon_refresh" class="glyphicon glyphicon-refresh"></span></p>
+    <p>
+        Refresh this page:
+        <span id="icon_refresh" class="glyphicon glyphicon-refresh"></span>
+        <span id="icon_wait" style="display: none;" class="glyphicon glyphicon-time"></span>
+    </p>
 
 {% endblock %}
 
