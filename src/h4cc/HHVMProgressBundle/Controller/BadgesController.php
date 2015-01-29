@@ -15,8 +15,11 @@ class BadgesController extends Controller
 {
     public function jsonAction($name, Request $request)
     {
-        $branch = $request->get('branch', 'dev-master');
-        $packageVersion = $this->getPackageVersion($name, $branch);
+        $packageVersion = $this->getPackageVersion($name, $request->get('branch', 'dev-master'));
+
+        if(!$packageVersion) {
+            throw new NotFoundHttpException();
+        }
 
         $hhvmStatusString = HHVM::getStringForStatus($packageVersion->getTravisContent()->getHhvmStatus());
 
@@ -28,11 +31,9 @@ class BadgesController extends Controller
 
     public function showAction($name, Request $request, $type)
     {
-        $branch = $request->get('branch', 'dev-master');
+        $packageVersion = $this->getPackageVersion($name, $request->get('branch', 'dev-master'));
 
-        try {
-            $packageVersion = $this->getPackageVersion($name, $branch);
-        }catch(NotFoundHttpException $e) {
+        if(!$packageVersion) {
             return new Response('', 404);
         }
 
@@ -51,12 +52,22 @@ class BadgesController extends Controller
         return $response;
     }
 
-    private function getPackageVersion($name, $branch)
+    private function getPackageVersion($name, $branchParameter)
+    {
+        foreach(array($branchParameter, 'dev-'.$branchParameter) as $branch) {
+            $packageVersion = $this->realGetPackageVersion($name, $branch);
+            if($packageVersion) {
+                return $packageVersion;
+            }
+        }
+        return null;
+    }
+
+    private function realGetPackageVersion($name, $branch)
     {
         $package = $repo = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
-
         if(!$package) {
-            throw new NotFoundHttpException();
+            return null;
         }
 
         $repo = $this->get('h4cc_hhvm_progress.repos.package_version');
@@ -69,7 +80,7 @@ class BadgesController extends Controller
 
         $version = $repo->getByPackageAndVersion($package, $branch);
         if(!$version) {
-            throw new NotFoundHttpException();
+            return null;
         }
 
         return $version;
