@@ -84,7 +84,25 @@ class PackageController extends Controller
     {
         $package = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
 
-        return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'package' => $package));
+        $versions = array();
+        if($package) {
+            $featureBranches = array();
+            foreach($package->getVersions()->toArray() as $version) {
+                if(0 === stripos($version->getVersionNormalized(), 'dev-')) {
+                    $featureBranches[$version->getVersionNormalized()] = $version;
+                }else{
+                    $versions[$version->getVersionNormalized()] = $version;
+                }
+            }
+
+            uksort($versions, function($v1, $v2) {
+                // Sorting backwars from highest version to lowest.
+                return version_compare($v2, $v1);
+            });
+            $versions = array_merge($featureBranches, $versions);
+        }
+
+        return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'package' => $package, 'versions' => array_values($versions)));
     }
 
     private function paginate($rows, Request $request) {
