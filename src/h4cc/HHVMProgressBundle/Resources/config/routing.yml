@@ -88,6 +88,7 @@ h4cc_hhvm_progress_badges_json:
         name: .+
 
 h4cc_hhvm_progress_badges_show:
+    host:     %site_domain%
     pattern:  /badge/{name}.{type}
     defaults: { _controller: h4ccHHVMProgressBundle:Badges:show }
     requirements:

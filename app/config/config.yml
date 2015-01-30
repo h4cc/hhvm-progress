@@ -1,3 +1,6 @@
+parameters:
+    site_domain: 'hhvm.h4cc.de'
+
 imports:
     - { resource: parameters.yml }
 #    - { resource: security.yml }
