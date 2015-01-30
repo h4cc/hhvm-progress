@@ -31,6 +31,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    globals:
+        site_domain:    "%site_domain%"
+        site_url:       "http://%site_domain%"
 
 # Doctrine Configuration
 doctrine:
