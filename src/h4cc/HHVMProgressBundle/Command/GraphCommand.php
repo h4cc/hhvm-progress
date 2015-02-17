@@ -48,11 +48,12 @@ class GraphCommand extends ContainerAwareCommand
           '4.0.*' => 'laravel_4_0',
           '4.1.*' => 'laravel_4_1',
           '4.2.*' => 'laravel_4_2',
+          '5.0.*' => 'laravel_5_0',
         );
 
         foreach ($laravelVersions as $version => $name) {
             try {
-                $this->createGraphLaravel4($version, $name);
+                $this->createGraphLaravel($version, $name);
             } catch (\Exception $e) {
                 $output->writeln("Generating Laravel graphs failed: " . $e->getMessage());
             }
@@ -173,7 +174,7 @@ class GraphCommand extends ContainerAwareCommand
         $this->createComposerGraphs(self::TMP_DIR, $name);
     }
 
-    protected function createGraphLaravel4($version, $name)
+    protected function createGraphLaravel($version, $name)
     {
         $this->prepare();
         $p = $this->process(self::TMP_DIR);
