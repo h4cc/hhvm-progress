@@ -50,6 +50,7 @@ class GraphCommand extends ContainerAwareCommand
           '4.1.*' => 'laravel_4_1',
           '4.2.*' => 'laravel_4_2',
           '5.0.*' => 'laravel_5_0',
+          '5.1.*' => 'laravel_5_1',
         );
 
         foreach ($laravelVersions as $version => $name) {
