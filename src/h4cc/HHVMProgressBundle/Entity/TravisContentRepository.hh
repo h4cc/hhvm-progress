@@ -150,6 +150,7 @@ class TravisContentRepository
         $rsm->addScalarResult('max_hhvm', 'max_hhvm');
 
         $query = $this->om->createNativeQuery($sql, $rsm);
+        $query->useResultCache(true, 60, __CLASS__.':'.__METHOD__);
 
         return $query;
     }
