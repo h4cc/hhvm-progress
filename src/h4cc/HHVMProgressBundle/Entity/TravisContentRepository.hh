@@ -10,12 +10,14 @@ use h4cc\HHVMProgressBundle\HHVM;
 class TravisContentRepository
 {
     private ObjectRepository $repo;
+    private ObjectRepository $repoPackages;
 
     private ObjectManager $om;
 
-    public function __construct(ObjectRepository $repo, ObjectManager $om) {
+    public function __construct(ObjectRepository $repo, ObjectManager $om, ObjectRepository $repoPackages) {
         $this->repo = $repo;
         $this->om = $om;
+        $this->repoPackages = $repoPackages;
     }
 
     public function getByPackageAndSourceReference(Package $package, string $sourceReference) : ?TravisContent
@@ -27,23 +29,49 @@ class TravisContentRepository
         return $this->getAllByMaxHHVMStatusQuery($hhvmStatus)->getResult();
     }
 
-    public function getAllByMaxHHVMStatusQuery(int $hhvmStatus) : AbstractQuery {
+    public function getAllByMaxHHVMStatusQuery(int $hhvmStatus) : AbstractQuery
+    {
+        $packageIds = $this->getPackageIdsByMaxHHVMStatus($hhvmStatus);
+
         /** @var \Doctrine\ORM\QueryBuilder $query */
-        $query = $this->repo->createQueryBuilder('tc');
+        $query = $this->repoPackages->createQueryBuilder('p');
 
-        $query->select('tc', 'p');
-        $query->leftJoin('tc.package', 'p');
+        $query->select('p');
 
-        $query->groupBy('tc.package');
-        $query->having('MAX(tc.hhvm_status) = ?1');
+        $query->where('p.id IN (:ids)');
+        $query->setParameter('ids', $packageIds);
+
         $query->orderBy('p.name', 'ASC');
-
-        $query->setParameter(1, $hhvmStatus);
 
         return $query
             ->getQuery()
             ->useResultCache(true, 3600, __CLASS__.':'.__METHOD__.':hhvmStatus:'.$hhvmStatus)
         ;
+    }
+
+    private function getPackageIdsByMaxHHVMStatus(int $hhvmStatus) : array<int>
+    {
+        /** @var \Doctrine\ORM\QueryBuilder $query */
+        $query = $this->repo->createQueryBuilder('tc');
+
+        $query->select(['IDENTITY(tc.package) as package_id']);
+
+        $query->where('tc.hhvm_status = ?1');
+        $query->setParameter(1, $hhvmStatus);
+
+        $query->groupBy('tc.package');
+
+        $result = $query
+            ->getQuery()
+            ->useResultCache(true, 600, __CLASS__.':'.__METHOD__.':hhvmStatus:'.$hhvmStatus)
+            ->getArrayResult()
+        ;
+
+        $packageIds = array_map(function(array $row) {
+            return (int)$row['package_id'];
+        }, $result);
+
+        return $packageIds;
     }
 
     public function getMaxHHVMStatusForNames() {

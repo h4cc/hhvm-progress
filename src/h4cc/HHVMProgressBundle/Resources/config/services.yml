@@ -91,6 +91,7 @@ services:
         arguments:
           - @h4cc_hhvm_progress.doctrine_repo.travis_content
           - @h4cc_hhvm_progress.orm.entity_manager
+          - @h4cc_hhvm_progress.doctrine_repo.package
 
     #h4cc_hhvm_progress.repos.package_stats:
     #    class: h4cc\HHVMProgressBundle\Entity\PackageStatsRepository

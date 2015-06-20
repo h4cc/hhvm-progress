@@ -12,11 +12,11 @@ web_profiler:
     intercept_redirects: false
 
 # activate for testing.
-#doctrine:
-#    orm:
-#        metadata_cache_driver: memcache
-#        result_cache_driver: memcache
-#        query_cache_driver: memcache
+doctrine:
+    orm:
+        metadata_cache_driver: array
+        result_cache_driver: array
+        query_cache_driver: array
 
 monolog:
     handlers:
