@@ -4,6 +4,7 @@ namespace h4cc\HHVMProgressBundle\Entity;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
+use Doctrine\ORM\AbstractQuery;
 use h4cc\HHVMProgressBundle\HHVM;
 
 class TravisContentRepository
@@ -23,6 +24,10 @@ class TravisContentRepository
     }
 
     public function getAllByMaxHHVMStatus(int $hhvmStatus) : array<Package> {
+        return $this->getAllByMaxHHVMStatusQuery($hhvmStatus)->getResult();
+    }
+
+    public function getAllByMaxHHVMStatusQuery(int $hhvmStatus) : AbstractQuery {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('tc');
 
@@ -38,7 +43,7 @@ class TravisContentRepository
         return $query
             ->getQuery()
             ->useResultCache(true, 3600, __CLASS__.':'.__METHOD__.':hhvmStatus:'.$hhvmStatus)
-            ->getResult();
+        ;
     }
 
     public function getMaxHHVMStatusForNames() {
@@ -59,7 +64,48 @@ class TravisContentRepository
         return $result;
     }
 
+    public function getMaxHHVMStatusCountNumeric() : array<int, int>
+    {
+        $query = $this->getMaxHHVMStatusQuery();
+        $query->useResultCache(true, 3600, __CLASS__.':'.__METHOD__);
+
+        // Init array with all possible hhvm status.
+        $result = array();
+        foreach(HHVM::getAllHHVMStatus() as $status) {
+            $result[$status] = 0;
+        }
+
+        $total = 0;
+        foreach($query->getResult() as $row) {
+            $total += (int)$row['count'];
+            $result[(int)$row['max_hhvm']] = (int)$row['count'];
+        }
+        $result['total'] = $total;
+
+        return $result;
+    }
+
     public function getMaxHHVMStatusCount() : array<string, int>
+    {
+        $query = $this->getMaxHHVMStatusQuery();
+
+        // Init array with all possible hhvm status.
+        $result = array();
+        foreach(HHVM::getAllHHVMStatus() as $status) {
+            $result[HHVM::getStringForStatus($status)] = 0;
+        }
+
+        $total = 0;
+        foreach($query->getResult() as $row) {
+            $total += (int)$row['count'];
+            $result[HHVM::getStringForStatus((int)$row['max_hhvm'])] = (int)$row['count'];
+        }
+        $result['total'] = $total;
+
+        return $result;
+    }
+
+    private function getMaxHHVMStatusQuery() : AbstractQuery
     {
         $sql = '
             select count(sub.package_id) as `count`, sub.max_hhvm
@@ -77,20 +123,7 @@ class TravisContentRepository
 
         $query = $this->om->createNativeQuery($sql, $rsm);
 
-        // Init array with all possible hhvm status.
-        $result = array();
-        foreach(HHVM::getAllHHVMStatus() as $status) {
-            $result[HHVM::getStringForStatus($status)] = 0;
-        }
-
-        $total = 0;
-        foreach($query->getResult() as $row) {
-            $total += (int)$row['count'];
-            $result[HHVM::getStringForStatus((int)$row['max_hhvm'])] = (int)$row['count'];
-        }
-        $result['total'] = $total;
-
-        return $result;
+        return $query;
     }
 
     public function all() {

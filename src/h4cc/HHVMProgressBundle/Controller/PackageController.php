@@ -2,7 +2,6 @@
 
 namespace h4cc\HHVMProgressBundle\Controller;
 
-use h4cc\HHVMProgressBundle\Entity\PackageVersion;
 use h4cc\HHVMProgressBundle\HHVM;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,27 +14,42 @@ class PackageController extends Controller
 
     public function listSupportingAction(Request $request)
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_SUPPORTED);
+        $travisContentRepo = $this->get('h4cc_hhvm_progress.repos.travis_content');
 
-        $pagination = $this->paginate($packages, $request);
+        $packagesQuery = $travisContentRepo->getAllByMaxHHVMStatusQuery(HHVM::STATUS_SUPPORTED);
+
+        $counts = $travisContentRepo->getMaxHHVMStatusCountNumeric();
+        $packagesQuery->setHint('knp_paginator.count', $counts[HHVM::STATUS_SUPPORTED]);
+
+        $pagination = $this->get('knp_paginator')->paginate($packagesQuery, $request->query->get('page', 1), static::PER_PAGE, array('distinct' => false, 'wrap-queries' => true));
 
         return $this->render('h4ccHHVMProgressBundle:Package:list_supporting.html.twig', array('pagination' => $pagination));
     }
 
     public function listAllowedFailureAction(Request $request)
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_ALLOWED_FAILURE);
+        $travisContentRepo = $this->get('h4cc_hhvm_progress.repos.travis_content');
 
-        $pagination = $this->paginate($packages, $request);
+        $packagesQuery = $travisContentRepo->getAllByMaxHHVMStatusQuery(HHVM::STATUS_ALLOWED_FAILURE);
+
+        $counts = $travisContentRepo->getMaxHHVMStatusCountNumeric();
+        $packagesQuery->setHint('knp_paginator.count', $counts[HHVM::STATUS_ALLOWED_FAILURE]);
+
+        $pagination = $this->get('knp_paginator')->paginate($packagesQuery, $request->query->get('page', 1), static::PER_PAGE, array('distinct' => false, 'wrap-queries' => true));
 
         return $this->render('h4ccHHVMProgressBundle:Package:list_allowed_failure.html.twig', array('pagination' => $pagination));
     }
 
     public function needingHelpAction(Request $request)
     {
-        $packages = $this->get('h4cc_hhvm_progress.repos.travis_content')->getAllByMaxHHVMStatus(HHVM::STATUS_NONE);
+        $travisContentRepo = $this->get('h4cc_hhvm_progress.repos.travis_content');
 
-        $pagination = $this->paginate($packages, $request);
+        $packagesQuery = $travisContentRepo->getAllByMaxHHVMStatusQuery(HHVM::STATUS_NONE);
+
+        $counts = $travisContentRepo->getMaxHHVMStatusCountNumeric();
+        $packagesQuery->setHint('knp_paginator.count', $counts[HHVM::STATUS_NONE]);
+
+        $pagination = $this->get('knp_paginator')->paginate($packagesQuery, $request->query->get('page', 1), static::PER_PAGE, array('distinct' => false, 'wrap-queries' => true));
 
         return $this->render('h4ccHHVMProgressBundle:Package:needing_help.html.twig', array('pagination' => $pagination));
     }
@@ -47,7 +61,7 @@ class PackageController extends Controller
             $updater->updatePackage($name);
 
             return new JsonResponse(array('result' => 'success'));
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             return new JsonResponse(array('result' => 'failure'));
         }
     }
@@ -55,12 +69,12 @@ class PackageController extends Controller
     public function apiGetPackageAction($name)
     {
         $package = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
-        if(!$package) {
+        if (!$package) {
             throw new NotFoundHttpException();
         }
 
         $versions = array();
-        foreach($package->getVersions() as $version) {
+        foreach ($package->getVersions() as $version) {
             $travis = $version->getTravisContent();
             $versions[$version->getVersionNormalized()] = array(
                 'version' => $version->getVersion(),
@@ -85,17 +99,17 @@ class PackageController extends Controller
         $package = $this->get('h4cc_hhvm_progress.repos.package')->getByName($name);
 
         $versions = array();
-        if($package) {
+        if ($package) {
             $featureBranches = array();
-            foreach($package->getVersions()->toArray() as $version) {
-                if(0 === stripos($version->getVersionNormalized(), 'dev-')) {
+            foreach ($package->getVersions()->toArray() as $version) {
+                if (0 === stripos($version->getVersionNormalized(), 'dev-')) {
                     $featureBranches[$version->getVersionNormalized()] = $version;
-                }else{
+                } else {
                     $versions[$version->getVersionNormalized()] = $version;
                 }
             }
 
-            uksort($versions, function($v1, $v2) {
+            uksort($versions, function ($v1, $v2) {
                 // Sorting backwars from highest version to lowest.
                 return version_compare($v2, $v1);
             });
@@ -103,10 +117,5 @@ class PackageController extends Controller
         }
 
         return $this->render('h4ccHHVMProgressBundle:Package:show_versions.html.twig', array('name' => $name, 'package' => $package, 'versions' => array_values($versions)));
-    }
-
-    private function paginate($rows, Request $request) {
-        $paginator  = $this->get('knp_paginator');
-        return $paginator->paginate($rows, $request->query->get('page', 1), static::PER_PAGE);
     }
 }
