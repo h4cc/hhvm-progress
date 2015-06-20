@@ -55,7 +55,7 @@ class Package
     /**
      * @var
      *
-     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\PackageVersion", mappedBy="package", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\PackageVersion", mappedBy="package", cascade={"remove", "persist"})
      * @ORM\OrderBy({"versionNormalized" = "DESC"})
      */
     private $versions;
@@ -63,11 +63,12 @@ class Package
     /**
      * @var
      *
-     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent", mappedBy="package", cascade={"remove"})
+     * @ORM\OneToMany(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent", mappedBy="package", cascade={"remove", "persist"})
      */
     private $travisContents;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->versions = new ArrayCollection();
         $this->travisContents = new ArrayCollection();
     }
@@ -208,6 +209,11 @@ class Package
     public function getType()
     {
         return $this->type;
+    }
+
+    public function __toString()
+    {
+        return 'Package: ' . $this->id . ' ' . $this->name;
     }
 }
 

@@ -25,9 +25,10 @@ class TravisContent
     private $id;
 
     /**
-     * @var integer
+     * @var Package
      *
-     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="travisContents")
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="travisContents", cascade={"persist"})
+     * @ORM\JoinColumn(name="package_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $package;
 
@@ -59,7 +60,8 @@ class TravisContent
      */
     private $fileExists = false;
 
-    public function __construct(Package $package) {
+    public function __construct(Package $package)
+    {
         $this->setPackage($package);
     }
 
@@ -175,6 +177,11 @@ class TravisContent
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function __toString()
+    {
+        return 'TravisContent: ' . $this->id . ' ' . $this->package->getname() . ' ' . $this->sourceReference;
     }
 }
 

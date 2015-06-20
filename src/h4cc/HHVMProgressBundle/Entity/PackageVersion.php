@@ -24,16 +24,18 @@ class PackageVersion
     private $id;
 
     /**
-     * @var integer
+     * @var Package
      *
-     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="versions")
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\Package", inversedBy="versions", cascade={"persist"})
+     * @ORM\JoinColumn(name="package_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $package;
 
     /**
-     * @var
+     * @var TravisContent
      *
-     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent")
+     * @ORM\ManyToOne(targetEntity="h4cc\HHVMProgressBundle\Entity\TravisContent", cascade={"persist"})
+     * @ORM\JoinColumn(name="travisContent_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $travisContent;
 
@@ -58,7 +60,8 @@ class PackageVersion
      */
     private $sourceReference;
 
-    public function __construct(Package $package, TravisContent $travisContent) {
+    public function __construct(Package $package, TravisContent $travisContent)
+    {
         $this->setPackage($package);
         $this->setTravisContent($travisContent);
     }
@@ -168,6 +171,11 @@ class PackageVersion
     public function getSourceReference()
     {
         return $this->sourceReference;
+    }
+
+    public function __toString()
+    {
+        return 'PackageVersion: ' . $this->id . ' ' . $this->version . ' Package: ' . $this->package->getName();
     }
 }
 

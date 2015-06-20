@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PackageUpdateCommand extends ContainerAwareCommand
 {
     private $output;
+    private $input;
 
     protected function configure()
     {

@@ -89,7 +89,7 @@ class ReplacesUpdater
     }
 
     private function isStaticVersion($version) {
-        if(stripos($version, '*') || stripos($version, '~') || stripos($version, '>') || stripos($version, '<')) {
+        if(stripos($version, '*') || stripos($version, '~') || stripos($version, '>') || stripos($version, '<') || stripos($version, '^')) {
             // Containing a version operator means non static.
             return false;
         }
