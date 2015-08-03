@@ -65,6 +65,7 @@ class GraphCommand extends ContainerAwareCommand
           '1.0.*' => 'silex_1_0',
           '1.1.*' => 'silex_1_1',
           '1.2.*' => 'silex_1_2',
+          '1.3.*' => 'silex_1_3',
         );
 
         foreach ($silexVersions as $version => $name) {
