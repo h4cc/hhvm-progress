@@ -34,14 +34,26 @@
                            value="image:{badgeUrl}[&quot;{alt}&quot;, link=&quot;{siteUrl}&quot;]" class="input-xlarge">
                 </td>
             </tr>
-
             <tr>
-                <td colspan="2">
+                <td>
                     <b>Style: </b>
-                    <select name="style">
-                        <option value="plastic">Plastic</option>
+                </td>
+                <td>
+                    <select id="badge-select-style">
+                        <option value="plastic" selected="selected">Plastic</option>
                         <option value="flat">Flat</option>
                         <option value="flat-square">Flat-Square</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Format: </b>
+                </td>
+                <td>
+                    <select id="badge-select-format">
+                        <option value="svg" selected="selected">SVG</option>
+                        <option value="png">PNG</option>
                     </select>
                 </td>
             </tr>
@@ -51,7 +63,8 @@
     <div class="well well-sm pull-right" style="width: 90px;">
         <a href="#" id="badge-popover"
            data-alt="HHVM Status"
-           data-badge-url="{{ site_url }}{{ path('h4cc_hhvm_progress_badges_show', {"name": name, "type": "svg"}) }}"
+           data-badge-url-png="{{ site_url }}{{ path('h4cc_hhvm_progress_badges_show', {"name": name, "type": "png"}) }}"
+           data-badge-url-svg="{{ site_url }}{{ path('h4cc_hhvm_progress_badges_show', {"name": name, "type": "svg"}) }}"
            data-site-url="{{ site_url }}{{ path('h4cc_hhvm_progress_packages_show', {"name": name}) }}">
             Badges <span class="glyphicon glyphicon-info-sign"></span>
         </a>
@@ -105,19 +118,69 @@
 {% block javascripts %}
 
     <script language="javascript" type="text/javascript">
-        $(document).ready(function () {
-            $('#badge-popover').each(function () {
-                var badgeUrl = $(this).data('badge-url');
-                var siteUrl = $(this).data('site-url');
-                var alt = $(this).data('alt');
-                var html = $('#badge-urls').html().replace(/\{badgeUrl\}/g, badgeUrl).replace(/\{alt\}/g, alt).replace(/\{siteUrl\}/g, siteUrl);
 
-                $(this).popover({
-                    html: true,
-                    content: html,
-                    placement: 'left',
-                    title: alt + '@dev-master - <img src="' + badgeUrl + '" alt="' + alt + '">'
-                });
+        var badgeFormat = 'svg';
+        var badgeStyle = 'plastic';
+
+        $(document).ready(function () {
+
+            $('#badge-popover').each(function () {
+
+                var that = this;
+                var badgeUrl = $(that).data('badge-url-svg');
+                var siteUrl = $(that).data('site-url');
+                var alt = $(that).data('alt');
+
+                var popoverRegister = function () {
+                    $(that).popover('destroy');
+                    $(that).popover({
+                        html: true,
+                        content: popoverContent(),
+                        placement: 'left',
+                        title: alt + '@dev-master - <img src="' + badgeUrl + '" alt="' + alt + '">',
+                        animation: false
+                    });
+                };
+
+                var popoverContent = function () {
+
+                    siteUrl = $(that).data('site-url');
+                    alt = $(that).data('alt');
+
+                    if (badgeFormat == 'png') {
+                        badgeUrl = $(that).data('badge-url-png');
+                    } else {
+                        badgeUrl = $(that).data('badge-url-svg');
+                    }
+
+                    if (badgeStyle != 'plastic') {
+                        badgeUrl = badgeUrl.concat('?style=' + badgeStyle);
+                    }
+
+                    var contentHtml = $('#badge-urls').html()
+                            .replace(/\{badgeUrl\}/g, badgeUrl)
+                            .replace(/\{alt\}/g, alt)
+                            .replace(/\{siteUrl\}/g, siteUrl);
+                    var content = $.parseHTML(contentHtml);
+
+                    $('#badge-select-format option[value="' + badgeFormat + '"]', content).attr("selected", "selected");
+                    $('#badge-select-format', content).change(function () {
+                        badgeFormat = (this.value != 'svg') ? this.value : 'svg';
+                        popoverRegister();
+                        $(that).popover('show');
+                    });
+
+                    $('#badge-select-style option[value="' + badgeStyle + '"]', content).attr("selected", "selected");
+                    $('#badge-select-style', content).change(function () {
+                        badgeStyle = (this.value != 'plastic') ? this.value : 'plastic';
+                        popoverRegister();
+                        $(that).popover('show');
+                    });
+
+                    return content;
+                };
+
+                popoverRegister();
 
                 $(this).click(function (e) {
                     e.preventDefault();
