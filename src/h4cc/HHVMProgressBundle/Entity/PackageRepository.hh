@@ -23,7 +23,7 @@ class PackageRepository
         return $this->repo->findAll();
     }
 
-    public function allNames() : array<String> {
+    public function allNames() : array<string> {
         /** @var \Doctrine\ORM\QueryBuilder $query */
         $query = $this->repo->createQueryBuilder('p')->select('p.name')->getQuery();
         $result = $query->getScalarResult();

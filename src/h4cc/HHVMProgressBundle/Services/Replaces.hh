@@ -1,4 +1,4 @@
-<?hh // strict
+<?hh
 
 namespace h4cc\HHVMProgressBundle\Services;
 
@@ -11,11 +11,11 @@ class Replaces
     private LoggerInterface $logger;
     private PackageVersionRepository $versionRepository;
 
-    private String $cacheDir;
-    private String $cachePathPHP;
+    private string $cacheDir;
+    private string $cachePathPHP;
 
     public function __construct(
-        String $cacheDir,
+        string $cacheDir,
         PackageVersionRepository $versionRepository
     )
     {
@@ -31,7 +31,7 @@ class Replaces
         $this->logger = $logger;
     }
 
-    public function findReplacingVersion(String $name, String $version)
+    public function findReplacingVersion(string $name, string $version)
     {
         $foundPackageVersion= null;
         $maxHhvmStatus = -99;
@@ -50,7 +50,7 @@ class Replaces
         return $foundPackageVersion;
     }
 
-    public function getReplacingPackagesFor(String $name, String $version)
+    public function getReplacingPackagesFor(string $name, string $version)
     {
         $map = $this->getReplacesMap();
 

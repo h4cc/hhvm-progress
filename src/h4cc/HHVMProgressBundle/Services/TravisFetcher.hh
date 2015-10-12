@@ -1,4 +1,4 @@
-<?hh // strict
+<?hh
 
 namespace h4cc\HHVMProgressBundle\Services;
 
@@ -33,12 +33,15 @@ class TravisFetcher
 
         // Try to fetch from github
         if(false !== stripos($url, 'github.com')) {
+            $matches = null;
             if(preg_match('@github.com/(.+)/(.+)@', $url, $matches)) {
-                $user = $matches[1];
-                $repo = basename($matches[2], '.git');
-                $this->logger->debug("Fetching travis file from github for $user/$repo.");
+                if(!is_null($matches)) {
+                    $user = $matches[1];
+                    $repo = basename($matches[2], '.git');
+                    $this->logger->debug("Fetching travis file from github for $user/$repo.");
 
-                return $this->fetchGithub($user, $repo, $source->getReference());
+                    return $this->fetchGithub($user, $repo, $source->getReference());
+                }
             }
         }
 

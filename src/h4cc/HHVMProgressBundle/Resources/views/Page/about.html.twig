@@ -1,4 +1,3 @@
-
 {% extends "base.html.twig" %}
 
 {% block page_title %}About this page - {{ parent() }}{% endblock %}
@@ -41,6 +40,60 @@
     <p>
         This site should not be used to provide some sort of pressure on packages not supporting HHVM.
         If you want to have HHVM support in a package, talk to the maintainers or try to provide it yourself, it ain't that hard!
+    </p>
+
+    <h2 id="badges">HHVM Badges</h2>
+
+    <p>
+        This website is providing the cool badges you know from other services like Travis-CI or Scrutinizer.
+        Getting the badge for a package is quite easy, just decide which style and format you want.
+    </p>
+
+    <p>
+        <b>Formats:</b>
+        <ul>
+            <li><b>SVG</b>: Default format. Using smooth looking vector graphics.</li>
+            <li><b>PNG</b>: Normal image format with pixels.</li>
+        </ul>
+        <b>Styles:</b>
+        <ul>
+            <li>
+                <img src="http://hhvm.h4cc.de/badge/h4cc/stack-psr7-bridge.svg"/>
+                <b>plastic</b>:
+                Default style like the first badges had <i>back then</i>.
+            </li>
+            <li>
+                <img src="http://hhvm.h4cc.de/badge/h4cc/stack-psr7-bridge.svg?style=flat"/>
+                <b>flat</b>:
+                Flat style
+            </li>
+            <li>
+                <img src="http://hhvm.h4cc.de/badge/h4cc/stack-psr7-bridge.svg?style=flat-squared"/>
+                <b>flat-squared</b>:
+                Flat and squared style.
+            </li>
+        </ul>
+    </p>
+
+    <p>
+        Select your style and build your URL like this:
+
+        <pre><code>
+        VENDOR = h4cc
+        PACKAGE = stack-psr7-bridge
+
+        // Using SVG (recommended)
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.svg
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.svg?style=flat
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.svg?style=flat-square
+
+        // Using PNG
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.png
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.png?style=flat
+        http://hhvm.h4cc.de/badge/VENDOR/PACKAGE.png?style=flat-square
+        </code></pre>
+
+        Have fun! :)
     </p>
 
     <h2>API for HHVM status</h2>

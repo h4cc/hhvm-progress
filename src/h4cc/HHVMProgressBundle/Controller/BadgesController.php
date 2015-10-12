@@ -39,17 +39,31 @@ class BadgesController extends Controller
 
         $badgeFile = HHVM::getStringForStatus($packageVersion->getTravisContent()->getHhvmStatus());
 
+        $badgeStyle = $this->getBadgeStyleFromRequest($request);
+
         if('svg' == $type) {
-            $response = new Response(file_get_contents(__DIR__.'/../Resources/badges/hhvm_'.$badgeFile.'.svg'));
+            $response = new Response(file_get_contents(__DIR__.'/../Resources/badges/'.$badgeStyle.'/hhvm_'.$badgeFile.'.svg'));
             $response->headers->set('Content-Type', 'image/svg+xml;charset=utf-8');
         }else{
-            $response = new Response(file_get_contents(__DIR__.'/../Resources/badges/hhvm_'.$badgeFile.'.png'));
+            $response = new Response(file_get_contents(__DIR__.'/../Resources/badges/'.$badgeStyle.'/hhvm_'.$badgeFile.'.png'));
             $response->headers->set('Content-Type', 'image/png');
         }
 
         $response->headers->set('Cache-Control', sprintf('public, maxage=%s, s-maxage=%s', 3600, 3600));
 
         return $response;
+    }
+
+    private function getBadgeStyleFromRequest(Request $request)
+    {
+        switch(strtolower($request->get('style'))) {
+            case 'flat':
+                return 'flat';
+            case 'flat-square':
+                return 'flat-square';
+        }
+
+        return 'plastic';
     }
 
     private function getPackageVersion($name, $branchParameter)

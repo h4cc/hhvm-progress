@@ -1,4 +1,4 @@
-<?hh // strict
+<?hh
 
 namespace h4cc\HHVMProgressBundle\Services;
 
@@ -9,14 +9,14 @@ class ReplacesUpdater
 {
     private PackagistApi $packagist;
     private LoggerInterface $logger;
-    private String $cacheDir;
+    private string $cacheDir;
 
     private $cachePathSerialized;
     private $cachePathPHP;
 
     public function __construct(
         PackagistApi $packagist,
-        String $cacheDir
+        string $cacheDir
     )
     {
         $this->logger = new NullLogger();

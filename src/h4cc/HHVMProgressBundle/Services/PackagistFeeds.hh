@@ -1,4 +1,4 @@
-<?hh // strict
+<?hh
 
 namespace h4cc\HHVMProgressBundle\Services;
 
@@ -28,8 +28,11 @@ class PackagistFeeds
         foreach($releases as $release) {
             $name = $release->getName();
             // Need to extract package name via regex.
+            $matches = null;
             if(preg_match('@^(.+)\/(.+) \(.+\)$@', $name, $matches)) {
-                $names[] = $matches[1].'/'.$matches[2];
+                if(!is_null($matches)) {
+                    $names[] = $matches[1].'/'.$matches[2];
+                }
             }
         }
 

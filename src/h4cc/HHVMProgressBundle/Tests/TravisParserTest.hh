@@ -1,4 +1,4 @@
-<?hh //strict
+<?hh
 
 namespace h4cc\HHVMProgressBundle\Tests;
 
