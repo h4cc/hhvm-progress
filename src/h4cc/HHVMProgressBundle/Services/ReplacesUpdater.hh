@@ -5,6 +5,8 @@ namespace h4cc\HHVMProgressBundle\Services;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
+
 class ReplacesUpdater
 {
     private PackagistApi $packagist;
@@ -40,8 +42,12 @@ class ReplacesUpdater
         $packageInfos = [];
         $i = 1;
         foreach($packageNames as $name) {
-            $this->logger->debug('Fetching info for '.$name.' from packagist '.$i++.'/'.$namesCount);
-            $packageInfos[$name] = $this->packagist->getInfosByName($name);
+            try {
+                $this->logger->debug('Fetching info for '.$name.' from packagist '.$i++.'/'.$namesCount);
+                $packageInfos[$name] = $this->packagist->getInfosByName($name);
+            }catch(ClientErrorResponseException $exception) {
+                $this->logger->warning('Exception: ' . $exception->getMessage());
+            }
         }
 
         file_put_contents($this->cachePathSerialized, serialize($packageInfos));
