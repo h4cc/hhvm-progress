@@ -1,5 +1,6 @@
 parameters:
     site_domain: 'hhvm.h4cc.de'
+    storage_dir: "%kernel.root_dir%/storage/"
 
 imports:
     - { resource: parameters.yml }
