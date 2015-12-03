@@ -30,7 +30,8 @@ monolog:
         # Handle logging for files and graylog differently.
         main:
             type:    group
-            members: [graylog2, logfile]
+            members: [logfile]
+            #members: [graylog2, logfile]
 
         # Writing to logfile, only when there is at least a warning.
         logfile:
