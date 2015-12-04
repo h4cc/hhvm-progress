@@ -15,12 +15,19 @@ class ReplacesUpdateCommand extends ContainerAwareCommand
     {
         $this
             ->setName('h4cc:hhvm:replaces:update')
-            ->setDescription('Updates the information, which package can be replaced by which.')
-        ;
+            ->setDescription('Updates the information, which package can be replaced by which.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->printMemoryUsage($output);
         $this->getContainer()->get('h4cc_hhvm_progress.replaces.updater')->updateReplaces();
+        $this->printMemoryUsage($output);
+    }
+
+    private function printMemoryUsage(OutputInterface $output)
+    {
+        $usedBytes = memory_get_usage();
+        $output->writeln('[MEMORY] Allocated bytes: ' . $usedBytes);
     }
 }
