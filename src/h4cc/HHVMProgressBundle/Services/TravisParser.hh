@@ -43,6 +43,10 @@ class TravisParser
             return HHVM::STATUS_NONE;
         }
 
+        if(!is_array($data)) {
+            $data = [$data];
+        }
+
         return $this->parseHHVMStatus($data);
     }
 
